@@ -28,6 +28,11 @@
     cot dw ?
     hang dw ?
     select_mode db ? 
+    HUMAN_WIN db 'HUMAN WIN!$'
+    COMPUTER_WIN db 'COMPUTER WIN!$'
+    time db 'Computer are thinking next step$'
+    waitting db 'Please wait a second...$'
+    PLAYER_TURN db 'Player turn, Enter position (1-9): $' 
 .code
 
 MAIN PROC         
@@ -112,7 +117,27 @@ MAIN ENDP
 
 ;=======================================================================================================================================
 
-COMPTUER_TURN PROC 
+COMPTUER_TURN PROC
+    mov bx,0
+    mov cx,0
+     
+    mov dh,3
+    mov dl,28
+    mov ah,2
+    int 10h
+    
+    lea dx,time
+    mov ah,9
+    int 21h
+    
+    mov dh,5
+    mov dl,28
+    mov ah,2
+    int 10h
+    
+    lea dx,waitting
+    mov ah,9
+    int 21h
     
     call CHANCE_TO_WIN
     cmp al,1 ; kiem tra co hoi chien thang 
@@ -145,6 +170,7 @@ ENTER_MOVE PROC
     add si,hang
     add si,cot
     mov [si],'O'
+    call DELAY
     jmp CONTINUE_GAME_VS_COMPUTER 
     RET
 ENTER_MOVE ENDP       
@@ -642,15 +668,31 @@ MODE ENDP
 
 ;=======================================================================================================================================
 
-X_TURN PROC
-    mov dh ,0
+X_TURN PROC 
+    mov dl,select_mode
+    cmp dl,2
+    je HUMAN_TURN
+    
+    mov dh ,5
     mov dl ,20 
     mov bh,0
     mov ah,2
     int 10h
     lea dx,IN_PLAYER_X
     mov ah,9
-    int 21h 
+    int 21h
+    jmp check_move_for_X 
+    
+    HUMAN_TURN: 
+    mov dh ,5
+    mov dl ,22 
+    mov bh,0
+    mov ah,2
+    int 10h
+    lea dx,PLAYER_TURN
+    mov ah,9
+    int 21h
+         
     check_move_for_X:
         lea si,BOARD
         mov ah,1
@@ -677,7 +719,7 @@ X_TURN ENDP
 ;=======================================================================================================================================
  
 O_TURN PROC
-    mov dh ,0
+    mov dh ,5
     mov dl ,20 
     mov bh,0
     mov ah,2
@@ -919,10 +961,20 @@ GAME_DRAW ENDP
    
 X_WIN PROC
     mov dh ,5
-    mov dl ,33
+    mov dl ,31
     mov ah,2
-    int 10h 
+    int 10h
+    
+    mov al,select_mode
+    cmp al,2
+    je msg_for_human 
     lea dx,X_WIN_OUT
+    mov ah,9
+    int 21h
+    jmp GAME_END
+    
+    msg_for_human:
+    lea dx,HUMAN_WIN
     mov ah,9
     int 21h
     jmp GAME_END            
@@ -933,10 +985,20 @@ X_WIN ENDP
 
 O_WIN PROC
     mov dh ,5
-    mov dl ,33
+    mov dl ,31
     mov ah,2
-    int 10h  
+    int 10h
+      
+    mov al,select_mode
+    cmp al,2
+    je msg_for_computer 
     lea dx,O_WIN_OUT
+    mov ah,9
+    int 21h
+    jmp GAME_END
+    
+    msg_for_computer:
+    lea dx,COMPUTER_WIN
     mov ah,9
     int 21h
     jmp GAME_END            
@@ -1033,7 +1095,7 @@ ENDL ENDP
 ;=======================================================================================================================================
 
 DELAY PROC
-    mov cx,0AFh
+    mov cx,05Fh
     delay_screen: 
         nop
         loop delay_screen
