@@ -3,10 +3,10 @@
 .data 
     BOARD db '123456789$'
     WELLCOME db 'Wellcome to Tic Tac Toe By Group 22!', 13, 10, '$'
-    MEM1 db 'Nguyen Hoai An', 13, 10, '$'
-    MEM2 db 'Nguyen Manh Kha', 13, 10, '$'
-    MEM3 db 'Nguyen Duc Long', 13, 10, '$'
-    MEM4 db 'Lang Viet Thanh', 13, 10, '$'
+    MEM1 db 'NGUYEN HOAI AN   B23DCCN002$'                           ; Gioi thieu 4 thanh vien nhom
+    MEM2 db 'NGUYEN MANH KHA  B23DCCN418$'
+    MEM3 db 'NGUYEN DUC LONG  B23DCCN502$'
+    MEM4 db 'LANG VIET THANH  B23DCCN768$'
     REQ db 'Press Any Key to Play Game!$'
     IN_PLAYER_X db 'Player X turn, Enter position (1-9): $'
     IN_PLAYER_O db 'Player O turn, Enter position (1-9): $'
@@ -16,15 +16,17 @@
     DRAW_OUT db 'Draw!$'
     crlf db 13, 10, '$'
     cnt dw ?
-    cur_row db ?
-    cur_column db ?
     cot_doc db '|$'
     cot_ngang db '-------$' 
-    msg_mem db 'Game made by:',13,10,'$' 
+    msg_mem db 'GAME MADE BY:$' 
     msg_choose_mode db 'You want to play with...$'
-    mode1 db '1.HUMAN$'
-    mode2 db '2.COMPUTER$'
-    msg_answer db 'Press your anser: $'
+    mode1 db '1 - HUMAN$'
+    mode2 db '2 - COMPUTER$'
+    msg_answer db 'Press your answer: $'                           
+    MODE2_1 db 'Who goes first?$'                                  ; Ai di truoc trong che do choi voi may?
+    MODE2_2 db '1 - YOU $'                                         ; Nguoi choi di truoc
+    MODE2_3 db '2 - COMPUTER$'                                     ; May di truoc
+    MODE2_4 db 'Enter your choice: $'                              ; Nhap lua chon
     cot dw ?
     hang dw ?
     select_mode db ? 
@@ -49,8 +51,8 @@ MAIN PROC
     mov select_mode,al
     cmp al,1
     je GAME_VS_HUMAN
-    jmp GAME_VS_COMPUTER
-     
+    jmp PLAYER_VS_COMPUTER
+    
     GAME_VS_HUMAN:
         mov bx,0
         call CLEAR_SCREEN  
@@ -79,34 +81,90 @@ MAIN PROC
         inc cnt
         jmp GAME_VS_HUMAN
         
-    
-    GAME_VS_COMPUTER: 
+    PLAYER_VS_COMPUTER:                 ; Che do Choi voi may
+        call CLEAR_SCREEN             ; Xoa man hinh
+        
+        mov dh,6
+        mov dl,28
         mov bx,0
-        call CLEAR_SCREEN  
-        call PRINT_TABLE
-        call CHECK_WIN
+        mov ah,2
+        int 10h
         
-        cmp al,'X'
-        je  X_WIN
+        mov ah, 9                     ; Goi ham ngat 9 de in Xau
+        lea dx, MODE2_1               ; Tro dx toi Thong bao 'Ai di truoc trong che do choi voi may?' 
+        int 21h                       ; In xau
         
-        cmp al,'O'
-        je O_WIN
+        mov dh,9
+        mov dl,28
+        mov bx,0
+        mov ah,2
+        int 10h                                   
         
-        call CHECK_DRAW
-        cmp al,1
-        je GAME_DRAW
         
-        mov ax,cnt
-        mov bh,2
-        div bh
+        lea dx, MODE2_2               ; Tro dx toi 'Nguoi choi di truoc'
+        mov ah,9 
+        int 21h                       ; In xau
         
-        cmp ah,0
-        je X_TURN ; HUMAN_TURN 
-        jmp COMPTUER_TURN
+        mov dh,11
+        mov dl,28
+        mov bx,0
+        mov ah,2
+        int 10h 
         
-        CONTINUE_GAME_VS_COMPUTER:
-        inc cnt
-        jmp GAME_VS_COMPUTER    
+        lea dx, MODE2_3               ; Tro dx toi 'May di truoc'  
+        mov ah,9
+        int 21h                       ; In xau  
+        
+        
+        mov dh,13
+        mov dl,28
+        mov bx,0
+        mov ah,2
+        int 10h 
+                             
+        lea dx, MODE2_4               ; Tro dx toi Thong bao 'Nhap lua chon'
+        mov ah,9
+        int 21h                       ; In xau
+         
+        mov ah, 1                     ; Goi ham ngat 1 de nhap 1 ki tu 
+        int 21h                       ; Nhap ki tu
+        
+        
+        
+        cmp al, '2'                   ; So sanh ki tu nhap voi '2'
+        
+        je PC_FIRST                   ; Neu la '2' thi Nhay toi May di truoc
+        jmp GAME_VS_COMPUTER          ; Neu khong thi Bat dau Game voi Nguoi di truoc
+        PC_FIRST:                     ; May di truoc
+            inc cnt                   ; Tang STT luot choi len 1
+            
+        GAME_VS_COMPUTER: 
+            mov bx,0
+            call CLEAR_SCREEN  
+            call PRINT_TABLE
+            call CHECK_WIN
+            
+            cmp al,'X'
+            je  X_WIN
+            
+            cmp al,'O'
+            je O_WIN
+            
+            call CHECK_DRAW
+            cmp al,1
+            je GAME_DRAW
+            
+            mov ax,cnt
+            mov bh,2
+            div bh
+            
+            cmp ah,0
+            je X_TURN ; HUMAN_TURN 
+            jmp COMPUTER_TURN
+            
+            CONTINUE_GAME_VS_COMPUTER:
+            inc cnt
+            jmp GAME_VS_COMPUTER    
      
     GAME_END:
     mov ah, 4Ch
@@ -117,7 +175,7 @@ MAIN ENDP
 
 ;=======================================================================================================================================
 
-COMPTUER_TURN PROC
+COMPUTER_TURN PROC                    ; Ham luot choi cua May
     mov bx,0
     mov cx,0
      
@@ -139,482 +197,446 @@ COMPTUER_TURN PROC
     mov ah,9
     int 21h
     
-    call CHANCE_TO_WIN
-    cmp al,1 ; kiem tra co hoi chien thang 
-    je ENTER_MOVE
-    
-    call CHANCE_TO_BLOCK
-    cmp al,1
-    je ENTER_MOVE
-    
-    call CHECK_MIDDLE_POS
-    cmp al,1
-    je ENTER_MOVE
-    
-    call CHECK_CORNER_POS
-    cmp al,1
-    je ENTER_MOVE 
-    
-    call CHECK_RANDOM_POS
-    cmp al,1
-    je ENTER_MOVE
+    call CHANCE_TO_WIN                ; Goi Ham tim nuoc di de WIN
+    call CHANCE_TO_BLOCK              ; Goi Ham tim nuoc di de BLOCK
+    call CHECK_MIDDLE_POS             ; Goi Ham tim nuoc di O Chinh giua
+    call CHECK_CORNER_POS             ; Goi Ham tim nuoc di 4 o goc
+    call CHECK_RANDOM_POS             ; Goi Ham tim nuoc di 4 con lai
     
     RET
-COMPTUER_TURN ENDP        
+COMPUTER_TURN ENDP        
 
 ;=======================================================================================================================================
 
 ENTER_MOVE PROC
-    ;toa do cua vi tri dien O da duoc luu tai hang va cot
-    lea si,BOARD
-    add si,hang
-    add si,cot
-    mov [si],'O'
-    call DELAY
-    jmp CONTINUE_GAME_VS_COMPUTER 
+    mov [si], 'O'                     ; Gan o tim duoc = 'O''
+    call DELAY                        ; Goi ham Delay
+    jmp CONTINUE_GAME_VS_COMPUTER     ; Tiep tuc tro choi
     RET
 ENTER_MOVE ENDP       
 
 ;=======================================================================================================================================
                                                                          
-CHANCE_TO_WIN PROC
+CHANCE_TO_WIN PROC                    ; Ham tim nuoc di de WIN
 ; check row================================================= 
     
-    lea si,BOARD
-    mov cx,3
-    POS_IN_ROW:
-        mov bl,0
-        mov hang,si 
+    mov cx, 3                         ; Khoi tao bien lap duyet 3 hang
+    lea si, BOARD                     ; Tro toi ki tu dau tien BOARD
+    DUYET_HANG_WIN:                   ; Duyet 1 hang
+        mov dh, [si]                  ; Gan DH = ki tu thu 1 cua hang
+        mov dl, [si + 1]              ; Gan DL = ki tu thu 2 cua hang
+        mov bl, [si + 2]              ; Gan BL = ki tu thu 3 cua hang
         
-        cmp [si],'X'
-        je INC_ROW
-        cmp [si],'O'
-        jne CONT_ROW1
-        mov cot,1
-        inc bl ; dem O trong mot hang
+        cmp dh, 'X'                   ; So sanh ki tu 1 vs Ki tu 'X'
+        je TIEP_TUC_DUYET_HANG_WIN    ; Neu la ki tu 'X' thi Duyet hang tiep theo
+        cmp dl, 'X'                   ; So sanh ki tu 2 vs Ki tu 'X'
+        je TIEP_TUC_DUYET_HANG_WIN    ; Neu la ki tu 'X' thi Duyet hang tiep theo
+        cmp bl, 'X'                   ; So sanh ki tu 3 vs Ki tu 'X'
+        je TIEP_TUC_DUYET_HANG_WIN    ; Neu la ki tu 'X' thi Duyet hang tiep theo
+                                      ; Kiem tra ki tu 1 vs 2
+        cmp dh, 'O'                   ; So sanh ki tu 1 vs Ki tu 'O'
+        jne skip1                     ; Neu khong giong thi kiem tra ki tu 2 vs 3
+        cmp dl, 'O'                   ; So sanh ki tu 2 vs Ki tu 'O'
+        jne skip1                     ; Neu khong giong thi kiem tra ki tu 2 vs 3
+        add si, 2                     ; Tim duoc nuoc di o ki tu 3
+        jmp ENTER_MOVE                ; Nhay toi Tim nuoc di thanh cong
         
-        CONT_ROW1:
-        cmp [si+1],'X'
-        je INC_ROW
-        cmp [si+1],'O'
-        jne CONT_ROW2
-        inc bl 
-        mov cot,2
-        
-        CONT_ROW2:
-        cmp [si+2],'X'
-        je INC_ROW
-        cmp [si+2],'O'
-        jne CHECK_POS_IN_ROW
-        inc bl 
-              
-        mov dx,cot
-        cmp dl,1  ;hang=1 tuc la 
-        jne CAN_PUT_O_TO_WIN_IN_ROW
-        mov cot,1 
-        
-        jmp CHECK_POS_IN_ROW
-        
-        CAN_PUT_O_TO_WIN_IN_ROW:
-        mov cot,0 
-        
-        ;kiem tra dieu kien
-        CHECK_POS_IN_ROW:
-        cmp bl,2
-        je FOUNDED_POS_WIN;bl=2
-         
-        INC_ROW: 
-            add si,3
-        loop POS_IN_ROW
+        skip1:                        ; Kiem tra ki tu 2 vs 3
+            cmp dl, 'O'               ; So sanh ki tu 2 vs Ki tu 'O'
+            jne skip2                 ; Neu khong giong thi kiem tra ki tu 1 vs 3
+            cmp bl, 'O'               ; So sanh ki tu 3 vs Ki tu 'O'
+            jne skip2                 ; Neu khong giong thi kiem tra ki tu 1 vs 3
+            add si, 0                 ; Tim duoc nuoc di o ki tu 1
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+            
+        skip2:                        ; Kiem tra ki tu 1 vs 3
+            cmp dh, 'O'               ; So sanh ki tu 1 vs Ki tu 'O'
+            jne TIEP_TUC_DUYET_HANG_WIN   ; Neu khong giong thi Duyet hang tiep theo
+            cmp bl, 'O'               ; So sanh ki tu 3 vs Ki tu 'O'
+            jne TIEP_TUC_DUYET_HANG_WIN   ; Neu khong giong thi Duyet hang tiep theo
+            add si, 1                 ; Tim duoc nuoc di o ki tu 2
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+            
+        TIEP_TUC_DUYET_HANG_WIN:      ; Tiep tuc duyet hang tiep theo
+            add si, 3                 ; Tro toi ki tu dau tien cua hang tiep theo
+            loop DUYET_HANG_WIN       ; Tiep tuc lap
     
 ; check column=================================================
     
-    lea si,BOARD
-    mov cx,3
+    mov cx, 3                         ; Khoi tao bien lap duyet 3 cot
+    lea si, BOARD                     ; Tro toi ki tu dau tien BOARD
+    DUYET_COT_WIN:                    ; Duyet 1 cot
+        mov dh, [si]                  ; Gan DH = ki tu thu 1 cua cot
+        mov dl, [si + 3]              ; Gan DL = ki tu thu 2 cua cot
+        mov bl, [si + 6]              ; Gan BL = ki tu thu 3 cua cot
+        
+        cmp dh, 'X'                   ; So sanh ki tu 1 vs Ki tu 'X'
+        je TIEP_TUC_DUYET_COT_WIN     ; Neu la ki tu 'X' thi Duyet cot tiep theo
+        cmp dl, 'X'                   ; So sanh ki tu 2 vs Ki tu 'X'
+        je TIEP_TUC_DUYET_COT_WIN     ; Neu la ki tu 'X' thi Duyet cot tiep theo
+        cmp bl, 'X'                   ; So sanh ki tu 3 vs Ki tu 'X'
+        je TIEP_TUC_DUYET_COT_WIN     ; Neu la ki tu 'X' thi Duyet cot tiep theo
+                                      ; Kiem tra ki tu 1 vs 2
+        cmp dh, 'O'                   ; So sanh ki tu 1 vs Ki tu 'O'
+        jne skip3                     ; Neu khong giong thi kiem tra ki tu 2 vs 3
+        cmp dl, 'O'                   ; So sanh ki tu 2 vs Ki tu 'O'
+        jne skip3                     ; Neu khong giong thi kiem tra ki tu 2 vs 3
+        add si, 6                     ; Tim duoc nuoc di o ki tu 3
+        jmp ENTER_MOVE                ; Nhay toi Tim nuoc di thanh cong
+        
+        skip3:                        ; Kiem tra ki tu 2 vs 3
+            cmp dl, 'O'               ; So sanh ki tu 2 vs Ki tu 'O'
+            jne skip4                 ; Neu khong giong thi kiem tra ki tu 1 vs 3
+            cmp bl, 'O'               ; So sanh ki tu 3 vs Ki tu 'O'
+            jne skip4                 ; Neu khong giong thi kiem tra ki tu 1 vs 3
+            add si, 0                 ; Tim duoc nuoc di o ki tu 1
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+        skip4:                        ; Kiem tra ki tu 1 vs 3
+            cmp dh, 'O'               ; So sanh ki tu 1 vs Ki tu 'O'
+            jne TIEP_TUC_DUYET_COT_WIN    ; Neu khong giong thi Duyet cot tiep theo
+            cmp bl, 'O'               ; So sanh ki tu 3 vs Ki tu 'O'
+            jne TIEP_TUC_DUYET_COT_WIN    ; Neu khong giong thi Duyet cot tiep theo
+            add si, 3                 ; Tim duoc nuoc di o ki tu 2
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+            
+        TIEP_TUC_DUYET_COT_WIN:       ; Tiep tuc duyet cot tiep theo
+            inc si                    ; Tro toi ki tu dau tien cua cot tiep theo
+            loop DUYET_COT_WIN        ; Tiep tuc lap    
     
-    POS_IN_COLUMN:
-        mov bl,0
-        mov cot,si
-        
-        cmp [si],'X'
-        je INC_COLUMN
-        cmp [si],'O'
-        jne CONT_COLUMN1
-        mov hang,3
-        inc bl ; dem O trong mot cot
-        
-        CONT_COLUMN1:
-        cmp [si+3],'X'
-        je INC_COLUMN
-        cmp [si+3],'O'
-        jne CONT_COLUMN2
-        inc bl 
-        mov hang,6
-        
-        CONT_COLUMN2:
-        cmp [si+6],'X'
-        je INC_COLUMN
-        cmp [si+6],'O'
-        jne CHECK_POS_IN_COLUMN
-        inc bl
-        mov dx,hang
-        cmp dl,3  ;hang=1 tuc la 
-        jne CAN_PUT_O_TO_WIN_IN_COLUMN
-        mov hang,3 
-        
-        jmp CHECK_POS_IN_COLUMN
-        
-        CAN_PUT_O_TO_WIN_IN_COLUMN:
-        mov hang,0  
-        
-        CHECK_POS_IN_COLUMN:
-        cmp bl,2
-        je FOUNDED_POS_WIN;bl=2
-         
-        INC_COLUMN: 
-            inc si
-        loop POS_IN_COLUMN    
+; check duong cheo chinh 
     
-; check cheo xuoi 
+    lea si, BOARD                     ; Tro toi ki tu dau tien BOARD
+    mov dh, BOARD[0]                  ; Gan DH = ki tu thu 1 cua DCC
+    mov dl, BOARD[4]                  ; Gan DL = ki tu thu 2 cua DCC
+    mov bl, BOARD[8]                  ; Gan BL = ki tu thu 3 cua DCC
     
-    lea si,BOARD
-    CHEO_XUOI: 
-        mov bl,0
-        cmp [si],'X'
-        je CHEO_NGUOC
-        cmp [si],'O'
-        jne CONT_XUOI1
-        inc bl
-        mov hang,3
-        mov cot,1
-        
-        CONT_XUOI1:
-        cmp [si+4],'X'
-        je CHEO_NGUOC
-        cmp [si+4],'O'
-        jne CONT_XUOI2
-        inc bl
-        mov hang,6
-        mov cot,2 
-        
-        CONT_XUOI2:
-        cmp [si+8],'X'
-        je CHEO_NGUOC
-        cmp [si+8],'O'
-        jne CHECK_CHEO_XUOI
-        inc bl
-        mov cot,0
-        mov hang,0
-        
-    CHECK_CHEO_XUOI:
-    cmp bl,2
-    je FOUNDED_POS_WIN;bl=2 
-    ; check cheo nguoc
+    cmp dh, 'X'                       ; So sanh ki tu 1 vs Ki tu 'X'
+    je TIEP_TUC_DCP_WIN               ; Neu la ki tu 'X' thi Duyet DCP
+    cmp dl, 'X'                       ; So sanh ki tu 1 vs Ki tu 'X'
+    je TIEP_TUC_DCP_WIN               ; Neu la ki tu 'X' thi Duyet DCP
+    cmp bl, 'X'                       ; So sanh ki tu 1 vs Ki tu 'X'
+    je TIEP_TUC_DCP_WIN               ; Neu la ki tu 'X' thi Duyet DCP
     
-    lea si,BOARD
-    CHEO_NGUOC: 
-        mov bl,0
-        cmp [si+2],'X'
-        je NOT_FOUND 
-        cmp [si+2],'O'
-        jne CONT_NGUOC1
-        inc bl
-        mov hang,3
-        mov cot,1
+                                      ; Kiem tra ki tu 1 vs 2
+    cmp dh, 'O'                       ; So sanh ki tu 1 vs Ki tu 'O'
+    jne skip5                         ; Neu khong giong thi kiem tra ki tu 2 vs 3
+    cmp dl, 'O'                       ; So sanh ki tu 2 vs Ki tu 'O'
+    jne skip5                         ; Neu khong giong thi kiem tra ki tu 2 vs 3
+    add si, 8                         ; Tim duoc nuoc di o ki tu 3
+    jmp ENTER_MOVE                    ; Nhay toi Tim nuoc di thanh cong
         
-        CONT_NGUOC1:
-        cmp [si+4],'X'
-        je NOT_FOUND
-        cmp [si+4],'O'
-        jne CONT_NGUOC2
-        inc bl
-        mov hang,6
-        mov cot,0
+    skip5:                            ; Kiem tra ki tu 2 vs 3
+        cmp dl, 'O'                   ; So sanh ki tu 2 vs Ki tu 'O'
+        jne skip6                     ; Neu khong giong thi kiem tra ki tu 1 vs 3
+        cmp bl, 'O'                   ; So sanh ki tu 3 vs Ki tu 'O'
+        jne skip6                     ; Neu khong giong thi kiem tra ki tu 1 vs 3
+        add si, 0                     ; Tim duoc nuoc di o ki tu 1
+        jmp ENTER_MOVE                ; Nhay toi Tim nuoc di thanh cong
         
-        CONT_NGUOC2:
-        cmp [si+6],'X'
-        je NOT_FOUND
-        cmp [si+6],'O'
-        jne CHECK_CHEO_NGUOC
-        inc bl 
-        mov cot,2
-        mov hang,0
-    CHECK_CHEO_NGUOC:
-    cmp bl,2
-    je FOUNDED_POS_WIN
+    skip6:                            ; Kiem tra ki tu 1 vs 3
+        cmp dh, 'O'                   ; So sanh ki tu 1 vs Ki tu 'O'
+        jne TIEP_TUC_DCP_WIN          ; Neu khong giong thi Duyet DCP
+        cmp bl, 'O'                   ; So sanh ki tu 3 vs Ki tu 'O'
+        jne TIEP_TUC_DCP_WIN          ; Neu khong giong thi Duyet DCP
+        add si, 4                     ; Tim duoc nuoc di o ki tu 2
+        jmp ENTER_MOVE                ; Nhay toi Tim nuoc di thanh cong
     
-    NOT_FOUND:  
-    mov al,0
-    RET 
-    FOUNDED_POS_WIN:
-    mov al,1
+; Check duong cheo phu
+
+    TIEP_TUC_DCP_WIN:                 ; Kiem tra duong cheo phu
+        mov dh, BOARD[2]              ; Gan DH = ki tu thu 1 cua DCP
+        mov dl, BOARD[4]              ; Gan DL = ki tu thu 2 cua DCP
+        mov bl, BOARD[6]              ; Gan BL = ki tu thu 3 cua DCP
+                                      
+        cmp dh, 'X'                   ; So sanh ki tu 1 vs Ki tu 'X'
+        je XONG_8_DUONG_WIN           ; Neu la ki tu 'X' thi Ket thuc duyet 8 duong
+        cmp dl, 'X'                   ; So sanh ki tu 1 vs Ki tu 'X'
+        je XONG_8_DUONG_WIN           ; Neu la ki tu 'X' thi Ket thuc duyet 8 duong
+        cmp bl, 'X'                   ; So sanh ki tu 1 vs Ki tu 'X'
+        je XONG_8_DUONG_WIN           ; Neu la ki tu 'X' thi Ket thuc duyet 8 duong
+                                      ; Kiem tra ki tu 1 vs 2
+        cmp dh, 'O'                   ; So sanh ki tu 1 vs Ki tu 'O'
+        jne skip7                     ; Neu khong giong thi kiem tra ki tu 2 vs 3
+        cmp dl, 'O'                   ; So sanh ki tu 2 vs Ki tu 'O'
+        jne skip7                     ; Neu khong giong thi kiem tra ki tu 2 vs 3
+        add si, 6                     ; Tim duoc nuoc di o ki tu 3
+        jmp ENTER_MOVE                ; Nhay toi Tim nuoc di thanh con
+            
+        skip7:                        ; Kiem tra ki tu 2 vs 3
+            cmp dl, 'O'               ; So sanh ki tu 2 vs Ki tu 'O'
+            jne skip8                 ; Neu khong giong thi kiem tra ki tu 1 vs 3
+            cmp bl, 'O'               ; So sanh ki tu 3 vs Ki tu 'O'
+            jne skip8                 ; Neu khong giong thi kiem tra ki tu 1 vs 3
+            add si, 2                 ; Tim duoc nuoc di o ki tu 1
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+            
+        skip8:                        ; Kiem tra ki tu 1 vs 3
+            cmp dh, 'O'               ; So sanh ki tu 1 vs Ki tu 'O'
+            jne XONG_8_DUONG_WIN      ; Neu khong giong thi Ket thuc duyet 8 duong
+            cmp bl, 'O'               ; So sanh ki tu 3 vs Ki tu 'O'
+            jne XONG_8_DUONG_WIN      ; Neu khong giong thi Ket thuc duyet 8 duong
+            add si, 4                 ; Tim duoc nuoc di o ki tu 2
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+        
+    XONG_8_DUONG_WIN:                 ; Duyet xong 8 duong
     RET
 CHANCE_TO_WIN ENDP                                                                            
 
 ;=======================================================================================================================================
 
-CHANCE_TO_BLOCK PROC
-; check row=================================================   
-    lea si,BOARD
-    mov cx,3
-    ROW_X:
-        mov bl,0
-        mov hang,si 
+CHANCE_TO_BLOCK PROC                  ; Goi Ham tim nuoc di de BLOCK
+; check row================================================= 
+    
+    mov cx, 3                         ; Khoi tao bien lap duyet 3 hang
+    lea si, BOARD                     ; Tro toi ki tu dau tien BOARD
+    DUYET_HANG_BLOCK:                 ; Duyet 1 hang
+        mov dh, [si]                  ; Gan DH = ki tu thu 1 cua hang
+        mov dl, [si + 1]              ; Gan DL = ki tu thu 2 cua hang
+        mov bl, [si + 2]              ; Gan BL = ki tu thu 3 cua hang
         
+        cmp dh, 'O'                   ; So sanh ki tu 1 vs Ki tu 'O'
+        je TIEP_TUC_DUYET_HANG_BLOCK  ; Neu la ki tu 'O' thi Duyet hang tiep theo
+        cmp dl, 'O'                   ; So sanh ki tu 2 vs Ki tu 'O'
+        je TIEP_TUC_DUYET_HANG_BLOCK  ; Neu la ki tu 'O' thi Duyet hang tiep theo
+        cmp bl, 'O'                   ; So sanh ki tu 3 vs Ki tu 'O'
+        je TIEP_TUC_DUYET_HANG_BLOCK  ; Neu la ki tu 'O' thi Duyet hang tiep theo
+                                      ; Kiem tra ki tu 1 vs 2
+        cmp dh, 'X'                   ; So sanh ki tu 1 vs Ki tu 'X'
+        jne skip9                     ; Neu khong giong thi kiem tra ki tu 2 vs 3
+        cmp dl, 'X'                   ; So sanh ki tu 2 vs Ki tu 'X'
+        jne skip9                     ; Neu khong giong thi kiem tra ki tu 2 vs 3
+        add si, 2                     ; Tim duoc nuoc di o ki tu 3
+        jmp ENTER_MOVE                ; Nhay toi Tim nuoc di thanh cong
         
-        cmp [si],'O'
-        je INC_ROW_X
-        cmp [si],'X'
-        jne CONT_ROW_X1
-        mov cot,1
-        inc bl ; dem X trong mot hang
-        
-        CONT_ROW_X1:
-        cmp [si+1],'O'
-        je INC_ROW_X
-        cmp [si+1],'X'
-        jne CONT_ROW_X2
-        inc bl 
-        mov cot,2
-        
-        CONT_ROW_X2:
-        cmp [si+2],'O'
-        je INC_ROW_X
-        cmp [si+2],'X'
-        jne CHECK_ROW_X
-        inc bl
-        
-        mov dx,cot
-        cmp dl,1  ;cot=1 tuc la hang  cot 0 da dung
-        jne CAN_PUT_O_TO_BLOCK_IN_ROW
-        mov cot,1 
-        
-        jmp CHECK_ROW_X
-        
-        CAN_PUT_O_TO_BLOCK_IN_ROW:
-        mov cot,0
-        
-        CHECK_ROW_X:
-        cmp bl,2
-        je FOUNDED_POS_BLOCK;bl=2
-         
-        INC_ROW_X:
-            add si,3
-        loop ROW_X
+        skip9:                        ; Kiem tra ki tu 2 vs 3
+            cmp dl, 'X'               ; So sanh ki tu 2 vs Ki tu 'X'
+            jne skip10                ; Neu khong giong thi kiem tra ki tu 1 vs 3
+            cmp bl, 'X'               ; So sanh ki tu 3 vs Ki tu 'X'
+            jne skip10                ; Neu khong giong thi kiem tra ki tu 1 vs 3
+            add si, 0                 ; Tim duoc nuoc di o ki tu 1
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+            
+        skip10:                       ; Kiem tra ki tu 1 vs 3
+            cmp dh, 'X'               ; So sanh ki tu 1 vs Ki tu 'X'
+            jne TIEP_TUC_DUYET_HANG_BLOCK   ; Neu khong giong thi Duyet hang tiep theo
+            cmp bl, 'X'               ; So sanh ki tu 3 vs Ki tu 'X'
+            jne TIEP_TUC_DUYET_HANG_BLOCK   ; Neu khong giong thi Duyet hang tiep theo
+            add si, 1                 ; Tim duoc nuoc di o ki tu 2
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+            
+        TIEP_TUC_DUYET_HANG_BLOCK:    ; Tiep tuc duyet hang tiep theo
+            add si, 3                 ; Tro toi ki tu dau tien cua hang tiep theo
+            loop DUYET_HANG_BLOCK     ; Tiep tuc lap
     
 ; check column=================================================
     
-    lea si,BOARD
-    mov cx,3
+    mov cx, 3                         ; Khoi tao bien lap duyet 3 cot
+    lea si, BOARD                     ; Tro toi ki tu dau tien BOARD
+    DUYET_COT_BLOCK:                  ; Duyet 1 cot
+        mov dh, [si]                  ; Gan DH = ki tu thu 1 cua cot
+        mov dl, [si + 3]              ; Gan DL = ki tu thu 2 cua cot
+        mov bl, [si + 6]              ; Gan BL = ki tu thu 3 cua cot
+        
+        cmp dh, 'O'                   ; So sanh ki tu 1 vs Ki tu 'O'
+        je TIEP_TUC_DUYET_COT_BLOCK   ; Neu la ki tu 'O' thi Duyet cot tiep theo
+        cmp dl, 'O'                   ; So sanh ki tu 2 vs Ki tu 'O'
+        je TIEP_TUC_DUYET_COT_BLOCK   ; Neu la ki tu 'O' thi Duyet cot tiep theo
+        cmp bl, 'O'                   ; So sanh ki tu 3 vs Ki tu 'O'
+        je TIEP_TUC_DUYET_COT_BLOCK   ; Neu la ki tu 'O' thi Duyet cot tiep theo
+                                      ; Kiem tra ki tu 1 vs 2
+        cmp dh, 'X'                   ; So sanh ki tu 1 vs Ki tu 'X'
+        jne skip11                    ; Neu khong giong thi kiem tra ki tu 2 vs 3
+        cmp dl, 'X'                   ; So sanh ki tu 2 vs Ki tu 'X'
+        jne skip11                    ; Neu khong giong thi kiem tra ki tu 2 vs 3
+        add si, 6                     ; Tim duoc nuoc di o ki tu 3
+        jmp ENTER_MOVE                ; Nhay toi Tim nuoc di thanh cong
+        
+        skip11:                       ; Kiem tra ki tu 2 vs 3
+            cmp dl, 'X'               ; So sanh ki tu 2 vs Ki tu 'X'
+            jne skip12                ; Neu khong giong thi kiem tra ki tu 1 vs 3
+            cmp bl, 'X'               ; So sanh ki tu 3 vs Ki tu 'X'
+            jne skip12                ; Neu khong giong thi kiem tra ki tu 1 vs 3
+            add si, 0                 ; Tim duoc nuoc di o ki tu 1
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+        skip12:                       ; Kiem tra ki tu 1 vs 3
+            cmp dh, 'X'               ; So sanh ki tu 1 vs Ki tu 'X'
+            jne TIEP_TUC_DUYET_COT_BLOCK    ; Neu khong giong thi Duyet cot tiep theo
+            cmp bl, 'X'               ; So sanh ki tu 3 vs Ki tu 'X'
+            jne TIEP_TUC_DUYET_COT_BLOCK    ; Neu khong giong thi Duyet cot tiep theo
+            add si, 3                 ; Tim duoc nuoc di o ki tu 2
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+            
+        TIEP_TUC_DUYET_COT_BLOCK:     ; Tiep tuc duyet cot tiep theo
+            inc si                    ; Tro toi ki tu dau tien cua cot tiep theo
+            loop DUYET_COT_BLOCK      ; Tiep tuc lap    
     
-    COLUMN_X:
-        mov bl,0
-        mov cot,si
-        
-        
-        cmp [si],'O'
-        je INC_COLUMN_X
-        cmp [si],'X'
-        jne CONT_COLUMN_X1
-        mov hang,3
-        inc bl ; dem X trong mot cot
-        
-        CONT_COLUMN_X1:
-        cmp [si+3],'O'
-        je INC_COLUMN_X
-        cmp [si+3],'X'
-        jne CONT_COLUMN_X2
-        inc bl 
-        mov hang,6
-        
-        CONT_COLUMN_X2:
-        cmp [si+6],'O'
-        je INC_ROW
-        cmp [si+6],'X'
-        jne CHECK_COLUMN_X
-        inc bl 
-                
-        mov dx,hang
-        cmp dl,3  ;cot=1 tuc la hang  cot 0 da dung
-        jne CAN_PUT_O_TO_BLOCK_IN_COLUMN
-        mov hang,3 
-        
-        jmp CHECK_COLUMN_X
-        
-        CAN_PUT_O_TO_BLOCK_IN_COLUMN:
-        mov hang,0
-        
-        CHECK_COLUMN_X:
-        cmp bl,2
-        je FOUNDED_POS_BLOCK;bl=2
-         
-        INC_COLUMN_X:  
-            inc si
-        loop COLUMN_X    
+; check duong cheo chinh 
     
-; check cheo xuoi 
+    lea si, BOARD                     ; Tro toi ki tu dau tien BOARD
+    mov dh, BOARD[0]                  ; Gan DH = ki tu thu 1 cua DCC
+    mov dl, BOARD[4]                  ; Gan DL = ki tu thu 2 cua DCC
+    mov bl, BOARD[8]                  ; Gan BL = ki tu thu 3 cua DCC
+    
+    cmp dh, 'O'                       ; So sanh ki tu 1 vs Ki tu 'O'
+    je TIEP_TUC_DCP_BLOCK             ; Neu la ki tu 'O'thi Duyet DCP
+    cmp dl, 'O'                       ; So sanh ki tu 1 vs Ki tu 'O'
+    je TIEP_TUC_DCP_BLOCK             ; Neu la ki tu 'O' thi Duyet DCP
+    cmp bl, 'O'                       ; So sanh ki tu 1 vs Ki tu 'O'
+    je TIEP_TUC_DCP_BLOCK             ; Neu la ki tu 'O' thi Duyet DCP
+    
+                                      ; Kiem tra ki tu 1 vs 2
+    cmp dh, 'X'                       ; So sanh ki tu 1 vs Ki tu 'X'
+    jne skip13                        ; Neu khong giong thi kiem tra ki tu 2 vs 3
+    cmp dl, 'X'                       ; So sanh ki tu 2 vs Ki tu 'X'
+    jne skip13                        ; Neu khong giong thi kiem tra ki tu 2 vs 3
+    add si, 8                         ; Tim duoc nuoc di o ki tu 3
+    jmp ENTER_MOVE                    ; Nhay toi Tim nuoc di thanh cong
+        
+    skip13:                           ; Kiem tra ki tu 2 vs 3
+        cmp dl, 'X'                   ; So sanh ki tu 2 vs Ki tu 'X'
+        jne skip14                    ; Neu khong giong thi kiem tra ki tu 1 vs 3
+        cmp bl, 'X'                   ; So sanh ki tu 3 vs Ki tu 'X'
+        jne skip14                    ; Neu khong giong thi kiem tra ki tu 1 vs 3
+        add si, 0                     ; Tim duoc nuoc di o ki tu 1
+        jmp ENTER_MOVE                ; Nhay toi Tim nuoc di thanh cong
+        
+    skip14:                           ; Kiem tra ki tu 1 vs 3
+        cmp dh, 'X'                   ; So sanh ki tu 1 vs Ki tu 'X'
+        jne TIEP_TUC_DCP_BLOCK        ; Neu khong giong thi Duyet DCP
+        cmp bl, 'X'                   ; So sanh ki tu 3 vs Ki tu 'X'
+        jne TIEP_TUC_DCP_BLOCK        ; Neu khong giong thi Duyet DCP
+        add si, 4                     ; Tim duoc nuoc di o ki tu 2
+        jmp ENTER_MOVE                ; Nhay toi Tim nuoc di thanh cong
+    
+; Check duong cheo phu
 
-    lea si,BOARD
-    CHEO_XUOI_X: 
-        mov bl,0
-        cmp [si],'O'
-        je CHEO_NGUOC_X
-        cmp [si],'X'
-        jne CONT_XUOI_X1
-        inc bl
-        mov hang,3
-        mov cot,1
+    TIEP_TUC_DCP_BLOCK:               ; Kiem tra duong cheo phu
+        mov dh, BOARD[2]              ; Gan DH = ki tu thu 1 cua DCP
+        mov dl, BOARD[4]              ; Gan DL = ki tu thu 2 cua DCP
+        mov bl, BOARD[6]              ; Gan BL = ki tu thu 3 cua DCP
+                                      
+        cmp dh, 'O'                   ; So sanh ki tu 1 vs Ki tu 'O' 
+        je XONG_8_DUONG_BLOCK         ; Neu la ki tu 'O' thi Ket thuc duyet 8 duong
+        cmp dl, 'O'                   ; So sanh ki tu 1 vs Ki tu 'O'
+        je XONG_8_DUONG_BLOCK         ; Neu la ki tu 'O' thi Ket thuc duyet 8 duong
+        cmp bl, 'O'                   ; So sanh ki tu 1 vs Ki tu 'O'
+        je XONG_8_DUONG_BLOCK         ; Neu la ki tu 'O' thi Ket thuc duyet 8 duong
+                                      ; Kiem tra ki tu 1 vs 2
+        cmp dh, 'X'                   ; So sanh ki tu 1 vs Ki tu 'X'
+        jne skip15                    ; Neu khong giong thi kiem tra ki tu 2 vs 3
+        cmp dl, 'X'                   ; So sanh ki tu 2 vs Ki tu 'X'
+        jne skip15                    ; Neu khong giong thi kiem tra ki tu 2 vs 3
+        add si, 6                     ; Tim duoc nuoc di o ki tu 3
+        jmp ENTER_MOVE                ; Nhay toi Tim nuoc di thanh con
+            
+        skip15:                       ; Kiem tra ki tu 2 vs 3
+            cmp dl, 'X'               ; So sanh ki tu 2 vs Ki tu 'X'
+            jne skip16                ; Neu khong giong thi kiem tra ki tu 1 vs 3
+            cmp bl, 'X'               ; So sanh ki tu 3 vs Ki tu 'X'
+            jne skip16                ; Neu khong giong thi kiem tra ki tu 1 vs 3
+            add si, 2                 ; Tim duoc nuoc di o ki tu 1
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+            
+        skip16:                       ; Kiem tra ki tu 1 vs 3
+            cmp dh, 'X'               ; So sanh ki tu 1 vs Ki tu 'X'
+            jne XONG_8_DUONG_BLOCK    ; Neu khong giong thi Ket thuc duyet 8 duong
+            cmp bl, 'X'               ; So sanh ki tu 3 vs Ki tu 'X'
+            jne XONG_8_DUONG_BLOCK    ; Neu khong giong thi Ket thuc duyet 8 duong
+            add si, 4                 ; Tim duoc nuoc di o ki tu 2
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
         
-        CONT_XUOI_X1:
-        cmp [si+4],'O'
-        je CHEO_NGUOC_X
-        cmp [si+4],'X'
-        jne CONT_XUOI_X2
-        inc bl
-        mov hang,6
-        mov cot,2 
-        
-        CONT_XUOI_X2:
-        cmp [si+8],'O'
-        je CHEO_NGUOC_X
-        cmp [si+8],'X'
-        jne CHECK_CHEO_XUOI_X
-        inc bl
-        mov cot,0
-        mov hang,0
-    CHECK_CHEO_XUOI_X:
-    cmp bl,2
-    je FOUNDED_POS_BLOCK;bl=2
-     
-    ; check cheo nguoc   
-    
-    
-    lea si,BOARD
-    CHEO_NGUOC_X: 
-        mov bl,0
-        cmp [si+2],'O'
-        je NOT_FOUNDED_BLOCK 
-        cmp [si+2],'X'
-        jne CONT_NGUOC_X1
-        inc bl
-        mov hang,3
-        mov cot,1
-        
-        CONT_NGUOC_X1:
-        cmp [si+4],'O'
-        je NOT_FOUNDED_BLOCK
-        cmp [si+4],'X'
-        jne CONT_NGUOC_X2
-        inc bl
-        mov hang,6
-        mov cot,0
-        
-        CONT_NGUOC_X2:
-        cmp [si+6],'O'
-        je NOT_FOUNDED_BLOCK
-        cmp [si+6],'X'
-        jne CHECK_CHEO_NGUOC_X
-        inc bl
-        mov cot,2
-        mov hang,0
-    CHECK_CHEO_NGUOC_X:
-    cmp bl,2
-    je FOUNDED_POS_BLOCK
-    
-    NOT_FOUNDED_BLOCK:  
-    mov al,0
-    RET 
-    FOUNDED_POS_BLOCK:
-    mov al,1
+    XONG_8_DUONG_BLOCK:               ; Duyet xong 8 duong
     RET
 CHANCE_TO_BLOCK ENDP 
 
 ;=======================================================================================================================================
 
-CHECK_MIDDLE_POS PROC 
-    cmp [si+4],'X'
-    je CANT_INSERT_MIDDLE 
-    cmp [si+4],'O'
-    je CANT_INSERT_MIDDLE  
-    mov hang,3
-    mov cot,1
-    mov al,1
-    RET
-    CANT_INSERT_MIDDLE:
-    mov al,0
+CHECK_MIDDLE_POS PROC                 ; Ham tim nuoc di O Chinh giua
+    lea si, BOARD                     ; Tro toi o dau tien cua BOARD 
+    cmp BOARD[4], 'X'                 ; So sanh o giua voi 'X'
+    je CANT_INSERT_MIDDLE             ; Neu la 'X' thi khong the chen vao giua
+    cmp BOARD[4], 'O'                 ; So sanh o giua voi 'O'
+    je CANT_INSERT_MIDDLE             ; Neu la 'O' thi khong the chen vao giua
+    add si, 4                         ; Tim duoc nuoc di o Chinh giua
+    jmp ENTER_MOVE                    ; Nhay toi Tim nuoc di thanh cong  
+    
+    CANT_INSERT_MIDDLE: 
+    
     RET
 CHECK_MIDDLE_POS ENDP        
 
 ;=======================================================================================================================================
  
-CHECK_CORNER_POS PROC
-    mov cx,2
-    lea si,BOARD 
-    mov hang,si
-    mov cot,0
-    FIND_CORNER_ROW_1:
-        cmp [si],'X'
-        je NEXT_CORNER_ROW_1
-        cmp [si],'O'
-        je NEXT_CORNER_ROW_1    
-        jmp FOUNDED_CORNER_POS
+CHECK_CORNER_POS PROC                 ; Ham tim nuoc di 4 o goc
+    lea si, BOARD                     ; Tro toi o dau tien cua BOARD
+    GOC0:                             ; Kiem tra [0][0]
         
-        NEXT_CORNER_ROW_1:  
-        mov cot,2
-        add si,2
-    loop FIND_CORNER_ROW_1 
-    
-    mov cx,2
-    add si,4 ;chuyen con tro xuong hang 3
-    mov hang,si
-    mov cot,0
-    FIND_CORNER_ROW_3:
-        cmp [si],'X'
-        je NEXT_CORNER_ROW_3
-        cmp [si],'O'
-        je NEXT_CORNER_ROW_3
-             
-        jmp FOUNDED_CORNER_POS
+        cmp BOARD[0], 'X'             ; So sanh [0][0] voi 'X'
+        je GOC2                       ; Neu la 'X' thi nhay toi tim o [0][2]
+        cmp BOARD[0], 'O'             ; So sanh [0][0] voi 'O'
+        je GOC2                       ; Neu la 'X' thi nhay toi tim o [0][2]
+                                      ; Tim duoc nuoc di o [0][0]
+        jmp ENTER_MOVE                ; Nhay toi Tim nuoc di thanh cong
         
-        NEXT_CORNER_ROW_3:
-        mov cot,2 
-        add si,2
-    loop FIND_CORNER_ROW_3
-    
-    NOT_FOUNDED_CORNER_POS:
-    mov al,0
-    RET
+        GOC2:                         ; Kiem tra [0][2]
+            cmp BOARD[2], 'X'         ; So sanh [0][2] voi 'X'
+            je GOC6                   ; Neu la 'X' thi nhay toi tim o [2][0]
+            cmp BOARD[2], 'O'         ; So sanh [0][2] voi 'O'
+            je GOC6                   ; Neu la 'O' thi nhay toi tim o [2][0]
+            add si, 2                 ; Tim duoc nuoc di o [0][2]
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+        
+        GOC6:                         ; Kiem tra [2][0]
+            cmp BOARD[6], 'X'         ; So sanh [2][0] voi 'X'
+            je GOC8                   ; Neu la 'X' thi nhay toi tim o [2][2]
+            cmp BOARD[6], 'O'         ; So sanh [2][0] voi 'O'
+            je GOC8                   ; Neu la 'O' thi nhay toi tim o [2][2]
+            add si, 6                 ; Tim duoc nuoc di o [2][0]
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+        
+        GOC8:                         ; Kiem tra [2][2]
+            cmp BOARD[8], 'X'         ; So sanh [2][2] voi 'X'
+            je FOUNDED_CORNER_POS     ; Neu la 'X' thi nhay toi Khong tim duoc o goc
+            cmp BOARD[8], 'O'         ; So sanh [2][2] voi 'O'
+            je FOUNDED_CORNER_POS     ; Neu la 'O' thi nhay toi Khong tim duoc o goc
+            add si, 8                 ; Tim duoc nuoc di o [2][2]
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
     
     FOUNDED_CORNER_POS:
-    mov al,1    
     RET
 CHECK_CORNER_POS ENDP    
 
 ;=======================================================================================================================================
 
-CHECK_RANDOM_POS PROC
-    lea si,BOARD
-    mov cx,9
-    mov hang,0
-    mov cot,0
-    FIND_RANDOM: 
-        cmp [si],'X'
-        je CONT_FIND_RANDOM
-        cmp [si],'O'        
-        je CONT_FIND_RANDOM
+CHECK_RANDOM_POS PROC                 ; Ham tim nuoc di 4 con lai
+    lea si, BOARD                     ; Tro toi o dau tien cua BOARD
+    O1:                               ; Kiem tra [0][1]
+        cmp BOARD[1], 'X'             ; So sanh [0][1] voi 'X'
+        je O3                         ; Neu la 'X' thi nhay toi tim o [1][0]
+        cmp BOARD[1], 'O'             ; So sanh [0][1] voi 'O'
+        je O3                         ; Neu la 'O' thi nhay toi tim o [1][0]
+        add si, 1                     ; Tim duoc nuoc di o [0][1]
+        jmp ENTER_MOVE                ; Nhay toi Tim nuoc di thanh cong
         
-        mov hang,si
-        jmp FOUNDED_RANDOM_POS                    
+        O3:                           ; Kiem tra [1][0]
+            cmp BOARD[3], 'X'         ; So sanh [1][0] voi 'X'
+            je O5                     ; Neu la 'X' thi nhay toi tim o [1][2]
+            cmp BOARD[3], 'O'         ; So sanh [1][0] voi 'O'
+            je O5                     ; Neu la 'O' thi nhay toi tim o [1][2]
+            add si, 3                 ; Tim duoc nuoc di o [1][0]
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
         
-        CONT_FIND_RANDOM:
-            inc si
-            loop FIND_RANDOM 
-    
-    CANT_FOUNDED_RANDOM_POS:
-        mov al,0        
-             
-    FOUNDED_RANDOM_POS:
-        mov al,1
+        O5:                           ; Kiem tra [1][2]
+            cmp BOARD[5], 'X'         ; So sanh [1][2] voi 'X'
+            je O7                     ; Neu la 'X' thi nhay toi tim o [2][1]
+            cmp BOARD[5], 'O'         ; So sanh [1][2] voi 'O'
+            je O7                     ; Neu la 'O' thi nhay toi tim o [2][1]
+            add si, 5                 ; Tim duoc nuoc di o [1][2]
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
+        
+        O7:                           ; Kiem tra [2][1]
+            add si, 7                 ; Tim duoc nuoc di o [1][2] (Do chac chan tim duoc nuoc di ma [2][1] la o cuoi cung)
+            jmp ENTER_MOVE            ; Nhay toi Tim nuoc di thanh cong
                 
     RET
 CHECK_RANDOM_POS ENDP    
@@ -623,7 +645,7 @@ CHECK_RANDOM_POS ENDP
  
 MODE PROC
     mov bh,0
-    mov dh,4
+    mov dh,6
     mov dl,28
     mov ah,2
     int 10h
@@ -632,7 +654,7 @@ MODE PROC
     mov ah,9
     int 21h
     
-    mov dh,6
+    mov dh,9
     mov dl,28
     mov ah,2
     int 10h
@@ -641,7 +663,7 @@ MODE PROC
     mov ah,9
     int 21h
     
-    mov dh,7
+    mov dh,11
     mov dl,28
     mov ah,2
     int 10h 
@@ -650,7 +672,7 @@ MODE PROC
     mov ah,9
     int 21h
     
-    mov dh,9
+    mov dh,13
     mov dl,28
     mov ah,2
     int 10h
@@ -947,7 +969,7 @@ CHECK_DRAW ENDP
 
 GAME_DRAW PROC
     mov dh ,5
-    mov dl ,33
+    mov dl ,36
     mov ah,2
     int 10h 
     lea dx,DRAW_OUT
@@ -985,13 +1007,14 @@ X_WIN ENDP
 
 O_WIN PROC
     mov dh ,5
-    mov dl ,31
+    mov dl ,32
     mov ah,2
     int 10h
       
     mov al,select_mode
     cmp al,2
-    je msg_for_computer 
+    je msg_for_computer
+     
     lea dx,O_WIN_OUT
     mov ah,9
     int 21h
@@ -1031,46 +1054,51 @@ INTRO PROC
     
     DONE_PRINT_WELLCOME:
     call CLEAR_SCREEN  
-    mov dh,4
+    mov dh,6
     mov dl,33
     mov bh,0
     mov ah,2
     int 10h
     lea dx,msg_mem
     mov ah,9
-    int 21h    
-    mov dh,6
-    mov dl,33
+    int 21h 
+       
+    mov dh,9
+    mov dl,27
     mov bh,0
     mov ah,2
-    int 10h
+    int 10h 
     lea dx,MEM1
     mov ah,9
     int 21h
-    mov dh,7
-    mov dl,33
+    
+    mov dh,11
+    mov dl,27
     mov bh,0
     mov ah,2
     int 10h
     lea dx,MEM2
     mov ah,9
-    int 21h  
-    mov dh,8
-    mov dl,33
+    int 21h
+      
+    mov dh,13
+    mov dl,27
     mov bh,0
     mov ah,2
     int 10h
     lea dx,MEM3
     mov ah,9
-    int 21h  
-    mov dh,9
-    mov dl,33
+    int 21h
+      
+    mov dh,15
+    mov dl,27
     mov bh,0
     mov ah,2
     int 10h
     lea dx,MEM4
     mov ah,9
-    int 21h
+    int 21h 
+    
     call DELAY   
     RET
 INTRO ENDP   
@@ -1095,7 +1123,7 @@ ENDL ENDP
 ;=======================================================================================================================================
 
 DELAY PROC
-    mov cx,05Fh
+    mov cx,08Fh
     delay_screen: 
         nop
         loop delay_screen
