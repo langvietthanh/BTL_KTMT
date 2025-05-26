@@ -1,0 +1,1017 @@
+\subsection*{\textbf{\Large GIỚI THIỆU ĐỀ TÀI}}
+\addcontentsline{toc}{subsection}{GIỚI THIỆU ĐỀ TÀI}
+\begin{itemize}
+    \item Tic Tac Toe (hay còn gọi là Cờ ca-rô) là một trò chơi giải trí cổ điển, quen thuộc với nhiều thế hệ. Với luật chơi đơn giản nhưng không kém phần hấp dẫn, trò chơi yêu cầu hai người chơi lần lượt đánh dấu X hoặc O vào một bảng gồm 9 ô (3x3), với mục tiêu tạo thành một hàng ngang, hàng dọc hoặc đường chéo gồm ba ký hiệu giống nhau. Mặc dù đơn giản về hình thức, Tic Tac Toe lại đòi hỏi sự tư duy chiến lược và khả năng phản xạ logic để vừa tấn công, vừa phòng thủ trước đối phương.
+    \item Emu8086 là một trình mô phỏng vi xử lý Intel 8086, cho phép người dùng viết và chạy mã hợp ngữ (assembly) trong môi trường mô phỏng. Đây là công cụ hữu ích để tìm hiểu sâu về hoạt động của vi xử lý và cách phần mềm tương tác với phần cứng.
+    \item Với đề tài “Lập trình game Tic Tac Toe trên Emu8086”, nhóm chúng em mong muốn:
+    \begin{enumerate}
+        \item \textbf{Rèn luyện kỹ năng lập trình Assembly: } Việc phát triển một trò chơi trên Emu8086 đòi hỏi hiểu biết sâu về ngôn ngữ lập trình hợp ngữ, quản lý bộ nhớ, xử lý ngắt và giao tiếp với người dùng ở mức độ thấp. Đây là cơ hội để chúng em nâng cao khả năng lập trình hệ thống và hiểu rõ hơn về kiến trúc máy tính.
+        \item \textbf{Xây dựng logic xử lý và kiểm tra điều kiện: }Trong chế độ hai người chơi, chương trình cần kiểm tra hợp lệ các nước đi, xác định người thắng cuộc và xử lý các tình huống hòa. Điều này giúp rèn luyện kỹ năng tư duy logic và lập trình điều kiện trong môi trường hạn chế.
+        \item \textbf{Tái hiện một trải nghiệm cổ điển: }Trò chơi Tic Tac Toe tuy đơn giản nhưng mang tính giải trí và cạnh tranh cao. Việc lập trình trò chơi này trên một nền tảng cổ điển như Emu8086 không chỉ mang đến trải nghiệm thú vị, mà còn giúp người chơi cảm nhận được sự hoài cổ trong một môi trường công nghệ hiện đại.
+    \end{enumerate}
+    \textbf{Nhóm thực hiện bao gồm:}
+    \begin{itemize}
+        \item Nguyễn Mạnh Kha - B23DCCN418
+        \item Lăng Viết Thành - B23DCCN768
+        \item Nguyễn Đức Long - B23DCCN502
+        \item Nguyễn Hoài An - B23DCCN002
+    \end{itemize}
+    Chúng em xin phép được trình bày chi tiết về đề tài: \textbf{Lập trình game Tic Tac Toe trên Emu8086.}
+\end{itemize}
+
+%========================================================================================================================================
+
+\subsection*{\textbf{\large NỘI DUNG CHÍNH CỦA ĐỀ TÀI}}
+\addcontentsline{toc}{subsection}{NỘI DUNG CHÍNH CỦA ĐỀ TÀI}
+
+\begin{enumerate}
+    \item \textbf{Mục tiêu đề tài}\\
+    Đề tài nhằm phát triển một trò chơi Tic Tac Toe (hay còn gọi là cờ ca-rô) bằng ngôn ngữ lập trình Assembly, chạy trên môi trường giả lập Emu8086. Trò chơi cho phép hai người chơi luân phiên đánh cờ trên cùng một máy hoặc 1 người chơi đánh với máy với giao diện đơn giản, thân thiện.
+    \item \textbf{Giới thiệu về trò chơi}
+    \begin{itemize}
+        \item \textbf{Tic Tac Toe} là trò chơi chiến lược dành cho 2 người, sử dụng một bảng gồm 9 ô (3 hàng $\times$ 3 cột).
+        \item Người chơi sẽ lần lượt chọn ký hiệu đại diện của mình: một người dùng \textbf{X}, người còn lại dùng \textbf{O}.
+        \item Mục tiêu là sắp xếp được \textbf{ba ký hiệu giống nhau} liền kề theo hàng ngang, cột dọc hoặc đường chéo để giành chiến thắng.
+        \item Nếu toàn bộ các ô đã được điền mà không có người chiến thắng, kết quả được tính là hòa.
+    \end{itemize}
+%=========================================================================
+    \begin{enumerate}[label=\alph*]
+%=========================================================================
+        \item \textbf{\textit{Cách chơi:}}
+        \begin{itemize}
+            \item \textbf{Người chơi 1} bắt đầu trước, chọn ô bất kỳ trên bàn cờ và đánh dấu "\textbf{X}".
+            \item \textbf{Người chơi 2} tiếp tục bằng cách đặt dấu "\textbf{O}" vào ô trống còn lại.
+            \item Trò chơi tiếp tục cho đến khi có người thắng hoặc tất cả các ô đã được điền.
+            \item Nếu 3 ô theo hàng ngang, hàng dọc, đường chéo có cùng một dấu thì người đó sẽ chiến thắng (WIN), nếu đi hết tất cả các ô mà không tìm được người chiến thắng thì cả 2 cùng hòa (DRAW)
+        \end{itemize} 
+%=========================================================================
+        \item \textbf{\textit{Tính năng chính:}}
+        \begin{itemize}
+            \item Hiển thị bàn cờ 3x3 với các ô được đánh số từ 1 đến 9.
+            \item Có \textbf{2 chế độ} là \textbf{người} và \textbf{máy}.
+            \item Cho phép người chơi nhập số tương ứng để đánh dấu vị trí mình chọn.
+            \item Tự động cập nhật bảng sau mỗi lượt đi.
+            \item Kiểm tra điều kiện thắng sau mỗi lượt và đưa ra thông báo thắng cuộc nếu có.
+            \item Nếu không ai thắng sau 9 lượt, trò chơi thông báo kết quả hòa.
+        \end{itemize} 
+%=========================================================================
+        \item \textbf{\textit{Đặc điểm nổi bật:}}
+        \begin{itemize}
+            \item Hỗ trợ chơi 2 người trên cùng thiết bị.
+            \item Hỗ trợ chơi với \textbf{máy}.
+            \item Thiết kế đơn giản, dễ sử dụng.
+            \item Trò chơi kinh điển mang tính đối kháng nhẹ nhàng, phù hợp với nhiều đối tượng.
+        \end{itemize} 
+    \end{enumerate}
+%=========================================================================    
+    \item\textbf{Cấu trúc và thuật toán chương trình}
+        \begin{enumerate}[label=\alph*]
+%=========================================================================
+        \item \textbf{\textit{Cấu trúc dữ liệu:}}
+        \begin{itemize}
+            \item Trò chơi sử dụng một mảng một chiều gồm 9 phần tử, mỗi phần tử tương ứng với một ô trên bàn cờ.
+            \item Ban đầu, các phần tử mảng ký tự từ '1' đến '9', đại diện cho số thứ tự các ô.
+        \end{itemize} 
+%=========================================================================
+        \item \textbf{\textit{Thuật toán hoạt động:}}
+        \begin{itemize}
+            \item \textbf{Xác định lượt chơi:} Biến đếm $CNT$ được sử dụng để kiểm soát số thứ tự lượt chơi hiện tại. Biến $CNT$ sẽ xác định người chơi hiện tại, với quy ước người chơi '\textbf{X}' đi trước ($CNT$ chẵn), '\textbf{O}' đi sau ($CNT$ lẻ).
+            \item \textbf{Nhập dữ liệu:} Người dùng sẽ nhập số đại diện cho ô họ muốn đánh. Nếu người chơi nhập sai hoặc chọn ô đã đánh, chương trình yêu cầu nhập lại.
+            \item \textbf{Cập nhật bảng cờ:} Sau mỗi lượt, chương trình thay đổi phần tử mảng tương ứng thành '\textbf{X}' hoặc '\textbf{O}'.
+            \item \textbf{Kiểm tra thắng cuộc:} Sau mỗi lượt, thuật toán kiểm tra 8 trường hợp thắng (3 hàng, 3 cột, 2 đường chéo).
+            \item \textbf{Kết luận trò chơi:} Nếu có người thắng, trò chơi dừng và in ra kết quả. Nếu hết lượt chơi mà không ai thắng, kết quả được xác định là hòa.
+            \item Bổ sung chế độ cho người chơi đấu với máy (AI).
+            \item Người chơi đi trước với ký hiệu "\textbf{X}", máy sử dụng "\textbf{O}".\\
+            \textbf{Máy tính dựa vào thuật toán để đưa ra nước đi:}
+            \item Nếu có thể thắng ngay, máy sẽ đi để chiến thắng.
+            \item Nếu đối thủ sắp thắng, máy sẽ chặn.
+            \item Nếu không, máy chọn một ô trống ngẫu nhiên (ưu tiên giữa/góc).
+        \end{itemize} 
+%=========================================================================
+        \item \textbf{\textit{Thay đổi trong chương trình:}}
+        \begin{itemize}
+            \item Thêm lựa chọn chế độ chơi (người với người / người với máy).
+            \item Viết hàm riêng cho lượt đi của máy.
+            \item Cập nhật logic kiểm tra thắng và kết thúc trò chơi.
+        \end{itemize} 
+%=========================================================================
+        \item \textbf{\textit{Lợi ích:}}
+        \begin{itemize}
+            \item Người chơi có thể giải trí một mình.
+            \item Tăng tính tương tác và hấp dẫn cho trò chơi.
+            \item Là bước đầu tiếp cận \textbf{tư duy AI đơn giản} trong Assembly.
+        \end{itemize}         
+    \end{enumerate}
+\end{enumerate}
+
+%========================================================================================================================================
+
+\subsection*{\textbf{\large MIÊU TẢ CHƯƠNG TRÌNH}}
+\addcontentsline{toc}{subsection}{MIÊU TẢ CHƯƠNG TRÌNH}
+
+\textbf{Lưu đồ thuật toán (Flowcharts) của chương trình:}\\
+\includegraphics[width=\linewidth]{image17.png}
+\textbf{Phân tích chương trình: }\href{https://ideone.com/sVtGtK}{Mã nguồn game TIC TAC TOE}
+
+\includegraphics[width=\linewidth]{Screenshot 2025-05-25 093249.png}
+\begin{itemize}
+    \item \textbf{BOARD}: Đại diện cho bảng Tic Tac Toe 3$times$3 gồm 9 phần tử được đánh số từ 1 đến 9 
+    \item \textbf{COLOR}: Mảng cho mã màu cho từng ký tự trong “msg\_winner” 
+    \item \textbf{WELCOME}: Lời chào đầu tiên khi chương trình chạy
+    \item \textbf{MEM1 đến MEM4}: Tên và mã SInh viên của các thành viên
+    \item \textbf{REQ}: Thông điệp yêu cầu người chơi nhập phím để tiếp tục chương trình 
+    \item \textbf{IN\_PLAYER\_X / O}: Thông điệp đến lượt X / O, yêu cầu nhập vị trí ô 
+    \item \textbf{INVALID\_MOVE}: Thông điệp nước đi lỗi, yêu cầu nhập lại
+    \item \textbf{X/O\_WIN\_OUT, DRAW\_OUT}: Thông báo kết quả trận đấu
+    \item \textbf{cnt}: Biến đếm để xác định lượt đi của ‘X’ và ‘O’
+    \item \textbf{cot\_doc, cot\_ngang}: Dùng để vẽ bảng
+    \item \textbf{msg\_mem}: Thông điệp giới thiệu thành viên 
+\end{itemize}
+
+\includegraphics[width=\linewidth]{Screenshot 2025-05-25 093227.png}
+\begin{itemize}
+    \item \textbf{msg\_choose\_mode}: Thông điệp yêu cầu chọn chế độ
+    \item \textbf{mode1, mode2}: Chế độ chơi (người/ máy)
+    \item \textbf{msg\_answer}: Thông điệp lựa chọn của người chơi                        
+    \item \textbf{MODE2\_1}: Thông điệp hỏi người chơi chọn người/máy đi trước                                
+    \item \textbf{MODE2\_2, MODE2\_3}: Lựa chọn cho người/máy đi trước                                  
+    \item \textbf{MODE2\_4}: Lựa chọn của người chơi
+    \item \textbf{select\_mode}: Lưu lựa chọn chế độ chơi với người/máy
+    \item \textbf{HUMAN\_WIN, COMPUTER\_WIN}: Thông điệp kết thúc ván game khi ‘X’/’O’ thắng (chế độ chơi với máy)
+    \item \textbf{msg\_winner}: Thông điệp chúc mừng chiến thắng
+    \item \textbf{msg\_lose}: Thông điệp khi người chơi thua máy
+    \item \textbf{time, waitting}: Thông điệp chờ máy tính toán 
+    \item \textbf{PLAYER\_TURN}: Thông điệp đến lượt người chơi đi (chế độ chơi với máy)   
+    \item \textbf{msg\_to\_continue}: Thông điệp yêu cầu người chơi nhập phím bất kỳ để tiếp tục chương trình
+\end{itemize}
+
+\textbf{\underline{MAIN}:}\\
+\includegraphics[width=\linewidth]{image69.png}
+
+\begin{itemize}
+    \item \textbf{call INTRO}: Gọi hàm in lời chào
+    \item \textbf{call CLEAR\_SCREEN}:  Hàm để dọn màn hình để in nội dung tiếp theo 
+    \item \textbf{call MODE}: Gọi hàm hiện lựa chọn chế độ chơi với (người/máy)
+    
+%=====================================================
+    \item \textbf{\underline{Nhãn GAME\_VS\_HUMAN:}}\\
+    \includegraphics[width=\linewidth]{image62.png}
+    \begin{itemize}
+        \item \textbf{call CLEAR\_SCREEN:} Dọn màn hình
+        \item \textbf{call PRINT\_TABLE:} In ra bảng 3x3
+        \item \textbf{je O\_WIN:} In thông điệp khi bên dùng dấu ‘O’ chiến thắng
+        \item \textbf{je X\_WIN:} In thông điệp khi bên dùng dấu ‘X’ chiến thắng 
+        \item \textbf{je GAME\_DRAW: }In thông điệp hòa
+    \end{itemize}
+%=====================================================    
+    \item \textbf{\underline{Nhãn PLAYER\_VS\_COMPUTER:}}\\
+    \includegraphics[width=\linewidth]{image31.png}
+    \includegraphics[width=\linewidth]{image28.png}
+    \begin{itemize}
+        \item \textbf{CLEAR\_SCREEN}: Dọn màn hình 
+        \item \textbf{mov DH,13 và mov DL, 28:} Vị trí muốn đặt con trỏ (DH vị trí hàng, DL vị trí cột)
+        \item \textbf{mov AH, 2 và int 10h}: Thực hiện ngắt để đặt lại vị trí con trỏ
+        \item \textbf{lea DX, MODE2\_1}: Tải địa chỉ của chuỗi MODE2\_1 vào DX
+        \item \textbf{mov AH, 9 và int 21h}: Thực hiện lệnh ngắt để in chuỗi có địa chỉ được lưu trong DX
+        \item[] \textbf{\large !}Các chuỗi \textbf{MODE2\_2, MODE2\_3, MODE2\_4} được thực hiện như \textbf{MODE2\_1}
+    \end{itemize}
+%=====================================================    
+    \item \textbf{\underline{Nhãn GAME\_VS\_COMPUTER:}}\\
+    \includegraphics[width=\linewidth]{image7.png}
+    
+    \begin{itemize}
+        \item \textbf{call CLEAR\_SCREEN:} Dọn màn hình
+        \item \textbf{call PRINT\_TABLE:} In ra bảng 3x3
+        \item \textbf{je O\_WIN:} In thông điệp khi bên dùng dấu ‘O’ chiến thắng
+        \item \textbf{je X\_WIN:} In thông điệp khi bên dùng dấu ‘X’ chiến thắng 
+        \item \textbf{je GAME\_DRAW}: In thông điệp hòa
+    \end{itemize}
+
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+
+\textbf{\underline{INTRO}: }Thủ tục in lời chào\\
+\includegraphics[width=\linewidth]{image33.png}
+
+\begin{itemize}
+    \item \textbf{lea SI, WELLCOME:} Tải địa chỉ ký tự đầu tiên của chuỗi WELLCOME vào SI
+    \item \textbf{mov DL, 5:} Đặt vị trí con trỏ lại về cột 5 
+    \item \textbf{mov DH, 34:} Đặt vị trí con trỏ lại về hàng 34.
+%=====================================================
+    \item \textbf{\underline{Nhãn PRINT\_WELLCOME:}}\\
+    \begin{itemize}
+        \item \textbf{mov AL, [SI]:} Gán ký tự của chuỗi \textbf{WELLCOME} vào \textbf{AL}
+        \item \textbf{cmp AL, ‘\$’:} So sánh \textbf{AL} với mã ascii của ‘\$’ 
+        \item \textbf{je DONE\_PRINT\_WELLCOME:} Nhảy đến nhãn \textbf{DONE\_PRINT\_WELLCOME} khi \textbf{AL} bằng ‘\$’
+        \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+        \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+        \item \textbf{mov AH, 9:} Hàm in ký tự có màu
+        \item \textbf{mov BH, 0:} Điều khiển con trỏ tại trang đang hiển thị 
+        \item \textbf{mov BL, 15:} Gán mã màu trắng vào \textbf{BL} cho kí tự được lưu ở \textbf{AL} 
+        \item \textbf{mov CX, 1:} In một lần 
+        \item \textbf{int 10h:} Gọi ngắt để in ký tự màu
+        \item \textbf{inc SI:} Tăng con trỏ sang ký tự tiếp theo trên chuỗi \textbf{WELLCOME}
+        \item \textbf{inc DL:} Tăng vị trí cột con trỏ 
+        \item \textbf{jmp PRINT\_WELLCOME:} Nhảy đến nhãn \textbf{PRINT\_WELLCOME}
+    \end{itemize}
+%=====================================================
+    \item \textbf{\underline{Nhãn DONE\_PRINT\_WELLCOME:}}\\
+    \includegraphics[width=\linewidth]{image49.png}
+    \begin{itemize}
+        \item \textbf{call DELAY:} Gọi thủ tục DELAY 
+        \item \textbf{call CLEAR\_SCREEN:} Gọi thủ tục \textbf{CLEAR\_SCREEN }
+        \item \textbf{mov DL, 6:} Đặt vị trí con trỏ lại về cột 6 
+        \item \textbf{mov DH, 33:} Đặt vị trí con trỏ lại về hàng 33
+        \item \textbf{mov BH, 0:} Điều khiển con trỏ tại trang đang hiển thị 
+        \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+        \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+        \item \textbf{lea DX, msg\_mem:} Tải địa chỉ chuỗi vào \textbf{DX}
+        \item \textbf{mov AH, 9:} Lệnh in chuỗi
+        \item \textbf{int 21h:} Gọi ngắt in chuỗi \\
+        \includegraphics[width=1.3\linewidth]{image38.png}
+        \item \textbf{mov DL, 9:} Đặt vị trí con trỏ lại về cột 9 
+        \item \textbf{mov DH, 27:} Đặt vị trí con trỏ lại về hàng 27
+        \item \textbf{mov BH, 0:} Điều khiển con trỏ tại trang đang hiển thị 
+        \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+        \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+        \item \textbf{lea DX, MEM1:} Tải địa chỉ chuỗi vào DX 
+        \item \textbf{mov AH, 9:} Lệnh in chuỗi
+        \item \textbf{int 21h:} Gọi ngắt in chuỗi
+        \item[] \textbf{{\large !} MEM2, MEM3, MEM4} thực hiện như  \textbf{MEM1} để in ra tên và mã SInh viên của thành viên 
+    \end{itemize}  
+%=====================================================
+    \includegraphics[width=1.2\linewidth]{image43.png}
+    \begin{itemize}
+            \item \textbf{mov DL, 18:} Đặt vị trí con trỏ lại về cột 18
+            \item \textbf{mov DH, 27:} Đặt vị trí con trỏ lại về hàng 27
+            \item \textbf{mov BH, 0:} Điều khiển con trỏ tại trang đang hiển thị 
+            \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+            \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+            \item \textbf{lea DX, msg\_to\_continue:} Tải địa chỉ chuỗi vào \textbf{DX}
+            \item \textbf{mov AH, 9:} Lệnh in chuỗi
+            \item \textbf{int 21h:} Gọi ngắt in chuỗi
+            \item \textbf{mov AH, 1:} Hàm nhập ký tự
+            \item \textbf{int 21h:} Gọi ngắt để in ký tự 
+            \item \textbf{RET:} Trả địa chỉ lệnh cho \textbf{IP} để quay lại \textbf{MAIN}
+    \end{itemize}    
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+
+\textbf{\underline{MODE}: }Thủ tục chọn chế độ chơi\\
+\includegraphics[width=1.2\linewidth]{image56.png}
+\includegraphics[width=0.5\linewidth]{image46.png}
+
+\begin{itemize}
+    \item \textbf{mov BH,0:} Điều khiển con trỏ tại trang đang hiển thị 
+    \item \textbf{mov DH,6:} Di chuyển con trỏ về hàng 6
+    \item \textbf{mov DL,28:} Di chuyển con trỏ về cột 28
+    \item \textbf{mov AH,2: }Hàm đặt vị trí con trỏ
+    \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+    \item \textbf{lea DX,msg\_choose\_mode:} Tải địa chỉ chuỗi vào \textbf{DX}
+    \item \textbf{mov AH,9: }Lệnh in chuỗi
+    \item \textbf{int 21h:} Gọi ngắt in chuỗi
+    \item \textbf{mov DH, 9:}  Di chuyển con trỏ về hàng 9, chuẩn bị in dòng đầu tiên của menu chế độ
+    \item \textbf{mov DL, 28:} Di chuyển con trỏ về cột 28, đồng bộ vị trí dòng mới với tiêu đề
+    \item \textbf{mov AH, 2:} Hàm đặt lại vị trí con trỏ
+    \item \textbf{int 10h:} Gọi ngắt BIOS để áp dụng vị trí con trỏ mới
+    \item \textbf{lea DX, mode1:} Tải địa chỉ chuỗi “\textbf{1. Player vs Player}” vào \textbf{DX} $-$ hiển thị chế độ chơi giữa 2 người
+    \item \textbf{mov AH, 9:} Chuẩn bị in chuỗi ra màn hình
+    \item \textbf{int 21h:} Thực hiện in chế độ 1
+    \item \textbf{mov DH, 11:} Di chuyển con trỏ về hàng 11 $-$ in dòng tiếp theo là chế độ 2
+    \item \textbf{mov DL, 28:} Di chuyển con trỏ về cột 28, giữ đồng nhất canh lề
+    \item \textbf{mov AH, 2:} Hàm định vị con trỏ
+    \item \textbf{int 10h:} Đặt lại con trỏ để hiển thị dòng mới
+    \item \textbf{lea DX, mode2:} Tải địa chỉ chuỗi “\textbf{2. Player vs Computer}” vào \textbf{DX}
+    \item \textbf{mov AH, 9:} Hàm in chuỗi ra màn hình
+    \item \textbf{int 21h:} In chế độ chơi thứ 2 lên màn hình
+    \item \textbf{mov DH, 13:} Di chuyển con trỏ xuống hàng 13, nơi người chơi sẽ nhập lựa chọn
+    \item \textbf{mov DL, 28:} Đưa con trỏ về cột 28
+    \item \textbf{mov AH, 2:} Gọi hàm định vị trí con trỏ
+    \item \textbf{int 10h:} Áp dụng vị trí con trỏ
+    \item \textbf{lea DX, msg\_answer:} Tải địa chỉ chuỗi “\textbf{Your choice:}” vào \textbf{DX} $-$ hướng dẫn người chơi nhập vào lựa chọn
+    \item \textbf{mov AH, 9:} Chuẩn bị in chuỗi
+    \item \textbf{int 21h:} Hiển thị chuỗi yêu cầu nhập dữ liệu
+    \item \textbf{mov AH, 1:} Chuẩn bị gọi hàm đọc 1 ký tự từ bàn phím mà không cần nhấn Enter
+    \item \textbf{int 21h:} Thực hiện đọc ký tự, lưu vào thanh ghi AL
+    \item \textbf{sub AL, '0':} Chuyển ký tự ASCII về giá trị số nguyên (ví dụ: nếu người chơi nhập '2', AL chứa mã ASCII 50 $\rightarrow$ 50 - 48 = 2)
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+
+\textbf{\underline{PRINT\_TABLE}: }Thủ tục in bảng 3$\times$3\\
+\includegraphics[width=\linewidth]{image42.png}
+
+\begin{itemize}
+    \item \textbf{mov DH, 9:} Di chuyển con trỏ về hàng 9
+    \item \textbf{mov DL, 35:} Di chuyển con trỏ về cột 35
+    \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+    \item \textbf{push DX:} Đẩy \textbf{DX} vào stack để lưu vị trí con trỏ
+    \item \textbf{lea DX, cot\_ngang:} Tải địa chỉ cột ngang đầu tiên vào \textbf{DX}
+    \item \textbf{mov AH, 9:} Lệnh in chuỗi
+    \item \textbf{int 21h:} Gọi ngắt in cột ngang đầu tiên
+    \item \textbf{pop DX:} Lấy lại vị trí con trỏ
+%=====================================================================
+  
+\item \textbf{\underline{Nhãn ROW}: }\\
+    \includegraphics[width=0.9\linewidth]{image51.png}
+    \begin{itemize}
+        \item \textbf{inc DH:} Tăng vị trí con trỏ lên 1 hàng
+        \item \textbf{cmp DH, 16:} So sánh giá trị \textbf{DH} với 16 
+        \item \textbf{je END\_PRINT\_TABLE:} Kết thúc in bảng khi \textbf{DH} = 16
+        \item \textbf{mov DL, 35:} Đặt lại vị trí con trỏ tại cột 15
+        \item \textbf{mov CX, 3:} Để thực hiện loop nhãn \textbf{COLUMN}
+        \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+        \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+        \item \textbf{push DX:} Đẩy \textbf{DX} vào stack để lưu vị trí con trỏ
+        \item \textbf{lea DX, cot\_doc:} Tải địa chỉ cột dọc đầu tiên trên 1 hàng vào \textbf{DX} 
+        \item \textbf{mov AH, 9:} Lệnh in chuỗi
+        \item \textbf{int 21h:} Gọi ngắt in cột dọc đầu tiên trên 1 hàng
+        \item \textbf{pop DX:} Lấy lại vị trí con trỏ
+        \item \textbf{inc DL: }Tăng vị trí con trỏ lên 1 cột
+    \end{itemize}
+%=====================================================================
+
+    \item \textbf{\underline{Nhãn COLUMN}: }\\
+    \includegraphics[width=\linewidth]{image71.png}
+    \begin{itemize}
+        \item \textbf{push CX:} Đẩy \textbf{CX} vào stack để lưu số lần loop \textbf{COLUMN}
+        \item \textbf{mov AL, [SI]:} Gán \textbf{AL} bằng kí tự \textbf{[SI]} trong mảng \textbf{BOARD}
+        \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+        \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+        \item \textbf{cmp AL,’X’:} So sánh \textbf{AL} với kí tự \textbf{X}
+        \item \textbf{je PRINT\_X:} \textbf{AL} bằng \textbf{X} thì nhảy đến nhăn \textbf{PRINT\_X}
+        \item \textbf{cmp AL,’O’:} So sánh \textbf{AL} với kí tự \textbf{O}
+        \item \textbf{je PRINT\_O:} \textbf{AL} bằng \textbf{X} thì nhảy đến nhăn \textbf{PRINT\_O}
+        \item \textbf{jmp DEFAUL:} Nhảy đến nhãn\textbf{DEFAUL}
+    \end{itemize}
+%=====================================================================
+    \item \textbf{\underline{Nhãn DEFAUL}: }
+    \begin{itemize}
+        \item \textbf{mov BH, 0:} Điều khiển con trỏ tại trang đang hiển thị 
+        \item \textbf{mov BL, 15:} Gán mã màu trắng vào \textbf{BL} cho kí tự được lưu ở \textbf{AL}
+        \item \textbf{mov AH, 9:} Hàm in ký tự có màu
+        \item \textbf{mov CX, 1:} In một lần 
+        \item \textbf{int 10h:} Gọi ngắt để in ký tự màu
+    \end{itemize}
+%=====================================================================
+    \item \textbf{\underline{Nhãn CONTINUE\_LOOP}: }\\
+    \includegraphics[width=\linewidth]{image14.png}
+    \begin{itemize}
+        \item \textbf{inc DL:} Tăng vị trí con trỏ lên 1 cột
+        \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+        \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+        \item \textbf{push DX:} Đẩy \textbf{DX} vào stack để lưu vị trí con trỏ
+        \item \textbf{lea DX, cot\_doc:} Tải địa chỉ cột dọc vào \textbf{DX}
+        \item \textbf{mov AH, 9:} Lệnh in chuỗi
+        \item \textbf{int 21h:} Gọi ngắt in cột dọc
+        \item \textbf{pop DX:} Lấy lại vị trí con trỏ
+        \item \textbf{inc DL:} Tăng vị trí con trỏ lên 1 cột
+        \item \textbf{inc SI:} Tăng con trỏ lên 1 để trỏ đến phần tử tiếp theo trong mảng \textbf{BOARD}
+        \item \textbf{pop CX:} Lấy lại giá trị \textbf{CX} để thực hiện loop \textbf{COLUMN}
+        \item \textbf{loop COLUMN:} Nếu \textbf{CX} khác 0 nhảy lại nhãn \textbf{COLUMN}
+        \item \textbf{mov DL, 35:} Đặt vị trí con trỏ lại về cột 35 để thực hiện in hàng tiếp theo
+        \item \textbf{inc DH:}  Tăng vị trí con trỏ lên 1 hàng
+        \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+        \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+        \item \textbf{push DX:}  Đẩy \textbf{DX} vào stack để lưu vị trí con trỏ
+        \item \textbf{lea DX, cot\_ngang:} Tải địa chỉ cột ngang vào \textbf{DX}
+        \item \textbf{mov AH, 9:} Lệnh in chuỗi
+        \item \textbf{int 21h:} Gọi ngắt in cột ngang sau khi in hàng đầu tiên 
+        \item \textbf{pop DX:} Lấy lại vị trí con trỏ
+        \item \textbf{jmp ROW:} Nhảy về nhãn \textbf{ROW}
+    \end{itemize}
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+
+\textbf{\underline{X\_TURN}: }Thủ tục lượt của X\\
+\includegraphics[width=\linewidth]{image15.png}
+
+\begin{itemize}
+    %\includegraphics[width=\linewidth]{image69.png}
+    \item Chế độ chơi 1 (chơi với người):
+    \begin{itemize}
+        \item \textbf{mov DH, 5:} Di chuyển con trỏ về hàng 5
+        \item \textbf{mov DL,  20:} Di chuyển con trỏ về cột 20
+        \item \textbf{mov BH, 0:} Điều khiển con trỏ tại trang đang hiển thị 
+        \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+        \item \textbf{int 10h: }Gọi ngắt để đặt lại con trỏ
+        \item \textbf{lea DX, IN\_PLAYER\_X: }Tải địa chỉ chuỗi vào \textbf{DX}
+        \item \textbf{mov AH, 9: }Lệnh in chuỗi
+        \item \textbf{int 21h: }Gọi ngắt in chuỗi
+        \item \textbf{jmp check\_move\_for\_X: }Nhảy đến phần kiểm tra nước đi cho \textbf{X} (tự động nếu là máy tính)
+    \end{itemize}
+    \includegraphics[width=\linewidth]{image67.png}
+    \item Chế độ chơi 2 (chơi với máy):
+    \begin{itemize}
+        \item \textbf{mov DH, 5:} Di chuyển con trỏ về hàng 5
+        \item \textbf{mov DL,  22:} Di chuyển con trỏ về cột 22
+        \item \textbf{mov BH, 0:} Điều khiển con trỏ tại trang đang hiển thị 
+        \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+        \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+        \item \textbf{lea DX, PLAYER\_TURN: }Tải địa chỉ chuỗi vào \textbf{DX}
+        \item \textbf{mov AH, 9: }Lệnh in chuỗi
+        \item \textbf{int 21h:} Gọi ngắt in chuỗi
+    \end{itemize} 
+    \item \textbf{\underline{Nhãn check\_move\_for\_X}: }\\
+    \includegraphics[width=\linewidth]{image29.png}
+    \begin{itemize}
+        \item \textbf{check\_move\_for\_X:}  kiểm tra nước đi của người chơi \textbf{X}
+        \item \textbf{lea SI, BOARD:} Tải địa chỉ bảng cờ vào thanh ghi \textbf{SI}
+        \item \textbf{mov AH, 1:} Chuẩn bị gọi hàm nhập 1 ký tự từ bàn phím
+        \item \textbf{int 21h: }Thực hiện đọc ký tự nhập từ người dùng
+        \item \textbf{sub al, '0': }Chuyển mã \textbf{ASCII} ký tự nhập về số (VD: '1' $\rightarrow$ 1)
+        \item \textbf{mov AH, 0:} Xóa phần cao của thanh ghi \textbf{AX }(giữ giá trị ở \textbf{AL})
+        \item \textbf{add SI, ax:} Dịch con trỏ \textbf{SI} đến vị trí người dùng chọn trong bảng
+        \item \textbf{dec SI:} Giảm đi 1 vì mảng đánh số từ 0
+        \item \textbf{mov bl, [SI]:} Lấy giá trị ô cờ người chơi chọn vào \textbf{BL}
+        \item \textbf{cmp bl, '9':} Kiểm tra xem ô đang chọn có trống không (đã bị đánh dấu chưa)
+        \item \textbf{jle VALID\_POS\_FOR\_X:} Nếu ký tự trong ô bé hơn hoặc bằng '9' thì được coi là ô hợp lệ
+        \item \textbf{call INVALID\_POS:} Gọi hàm xử lý nhập sai vị trí (ô đã có người đánh)
+        \item \textbf{jmp check\_move\_for\_X:}  Quay lại kiểm tra nước đi để nhập lại
+        \item \textbf{VALID\_POS\_FOR\_X: } xử lý khi vị trí được chọn là hợp lệ
+        \item \textbf{mov [SI], 'X':} Ghi ký tự '\textbf{X}' vào ô người chơi chọn
+        \item \textbf{mov bl, select\_mode: }Lấy lại chế độ chơi để xác định nhánh tiếp theo
+        \item \textbf{cmp bl, 1:} So sánh với chế độ 1 (PvP)
+        \item \textbf{je CONTINUE\_GAME\_VS\_HUMAN:} Nếu đang chơi với người thì nhảy đến xử lý lượt tiếp theo cho \textbf{O}
+        \item \textbf{jmp CONTINUE\_GAME\_VS\_COMPUTER:} Nếu không thì nhảy đến phần chơi tiếp với máy tính       
+    \end{itemize} 
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+
+\textbf{\underline{O\_TURN}: }Thủ tục lượt của O\\
+    \includegraphics[width=\linewidth]{image58_1.png}
+\begin{itemize}
+    \item Chế độ chơi với người:
+    \begin{itemize}
+        \item \textbf{mov DH, 5:} Di chuyển con trỏ về hàng 5
+        \item \textbf{mov DL, 20:} Di chuyển con trỏ về cột 20
+        \item \textbf{mov BH, 0:} Điều khiển con trỏ tại trang đang hiển thị 
+        \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+        \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+        \item \textbf{lea DX, IN\_PLAYER\_O:} Tải địa chỉ chuỗi vào \textbf{DX}
+        \item \textbf{mov AH, 9:} Lệnh in chuỗi
+        \item \textbf{int 21h:} Gọi ngắt in chuỗi
+    \end{itemize}
+    \item \textbf{\underline{Nhãn check\_move\_for\_O}: }\\
+    \includegraphics[width=\linewidth]{image58_2.png}
+    \begin{itemize}
+        \item \textbf{lea SI, BOARD: }Tải địa chỉ mảng bàn cờ vào thanh ghi \textbf{SI}
+        \item \textbf{mov AH, 1: }Chuẩn bị nhận 1 ký tự từ bàn phím
+        \item \textbf{int 21h: }Gọi ngắt để nhập ký tự ô muốn đánh (1 $\rightarrow$ 9)
+        \item \textbf{sub al, '0':} Chuyển ký tự số từ \textbf{ASCII} sang giá trị số (ví dụ: '1' $\rightarrow$ 1)
+        \item \textbf{mov AH, 0:} Xoá phần cao của thanh ghi \textbf{AX} để đảm bảo chính xác
+        \item \textbf{add SI, ax: }Tăng địa chỉ \textbf{SI} lên đúng ô người chơi chọn
+        \item \textbf{dec SI:} Vì mảng bắt đầu từ 0 nên giảm \textbf{SI} đi 1
+        \item \textbf{mov bl, [SI]:} Lấy giá trị tại ô đó vào \textbf{BL} để kiểm tra
+        \item \textbf{cmp bl, '9': }So sánh với ký tự '9' $-$ giả sử các ô trống ban đầu là '1' $\rightarrow$ '9'
+        \item \textbf{jle VALID\_POS\_FOR\_O:} Nếu giá trị nhỏ hơn hoặc bằng '9' $\rightarrow$ hợp lệ $\rightarrow$ chuyển đến \textbf{VALID\_POS\_FOR\_O}
+        \item \textbf{call INVALID\_POS:} Nếu ô đã bị đánh $\rightarrow$ gọi hàm báo lỗi
+        \item \textbf{jmp check\_move\_for\_O:} Quay lại nhập lại nước đi mới
+        \item \textbf{VALID\_POS\_FOR\_O:} Nhãn xử lý nếu người chơi \textbf{O} chọn ô hợp lệ
+        \item \textbf{mov [SI], 'O': }Ghi ký hiệu '\textbf{O}' vào ô đã chọn
+        \item \textbf{jmp CONTINUE\_GAME\_VS\_HUMAN:} Nhảy đến đoạn tiếp theo của trò chơi $-$ luân phiên lượt đánh
+    \end{itemize} 
+\end{itemize}
+%=======================================================================
+%=======================================================================
+\newpage
+\textbf{\underline{INVALID\_POS}: }Thủ tục nước đi lỗi\\
+\includegraphics[width=\linewidth]{image63.png}
+
+\begin{itemize}
+    \item \textbf{call CLEAR\_SCREEN:} Dọn màn hình hiển thị
+    \item \textbf{call PRINT\_TABLE:} In lại bảng 3$\times$3
+    \item \textbf{mov DH, 5:} Di chuyển con trỏ về hàng 5
+    \item \textbf{mov DL,  28:} Di chuyển con trỏ về cột 28
+    \item \textbf{mov BH, 0: }Điều khiển con trỏ tại trang đang hiển thị 
+    \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+    \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+    \item \textbf{lea DX, INVALID\_MOVE:} Tải địa chỉ chuỗi vào \textbf{DX}
+    \item \textbf{mov AH, 9:} Lệnh in chuỗi
+    \item \textbf{int 21h:} Gọi ngắt in chuỗi
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+\newpage
+\textbf{\underline{COMPUTER\_TURN}: }Thủ tục để lựa chọn nước đi tối ưu của Máy.\\
+\includegraphics[width=\linewidth]{image37.png}
+
+\begin{itemize}
+    \item \textbf{mov DH, 3 và mov DL, 28 :} Vị trí muốn đặt con trỏ (Hàng 3, Cột 28).
+    \item \textbf{mov AH, 2 và int 10h : }Thực hiện ngắt để đặt lại vị trí con trỏ.
+    \item \textbf{lea DX, time: }Tải đỉa chỉ của chuỗi thông điệp “\textbf{time}” vào \textbf{DX}.
+    \item \textbf{mov AH, 9:} Gọi hàm ngắt 9 để in 1 chuỗi.
+    \item \textbf{int 21h:} In thông điệp Thông báo Máy “đang nghĩ nước đi “.
+    \item \textbf{mov DH, 5 và mov DL, 28 :} Vị trí muốn đặt con trỏ (Hàng 5, Cột 28).
+    \item \textbf{mov AH, 2 và int 10h :} Thực hiện ngắt để đặt lại vị trí con trỏ.
+    \item \textbf{lea DX, waitting : }Tải đỉa chỉ của chuỗi thông điệp “\textbf{waitting}” vào \textbf{DX}.
+    \item \textbf{mov AH, 9:} Gọi hàm ngắt 9 để in 1 chuỗi.
+    \item \textbf{int 21h: }In thông điệp Thông báo “ Vui lòng đợi vài giây”.
+    \item \textbf{call CHANCE\_TO\_WIN :} Gọi hàm Tìm nước đi (nếu có) để Máy chiến thắng .
+    \item \textbf{call CHANCE\_TO\_BLOCK :} Gọi hàm Tìm nước đi (nếu có) để chặn Người chơi chiến thắng.
+    \item \textbf{call CHECK\_MIDDLE\_POS : }Gọi hàm Tìm nước đi ở ô chính giữa bàn cờ (nếu có) .
+    \item \textbf{call CHECK\_CORNER\_POS : }Gọi hàm Tìm nước đi (nếu có) ở 4 góc của bàn cờ.
+    \item \textbf{call CHECK\_RANDOM\_POS : }Gọi hàm Tìm nước đi (nếu có) ở 4 ô còn lại của bàn cờ.
+    \item \textbf{RET : }Hàm trả về, kết thúc hàm \textbf{COMPUTER\_WIN}
+\end{itemize}
+    
+%=======================================================================
+%=======================================================================
+
+\textbf{\underline{ENTER\_MOVE}: }Thủ tục gán nước đi của Máy vào bàn cờ.\\
+\includegraphics[width=\linewidth]{image52.png}
+
+\begin{itemize}
+    \item \textbf{mov [SI], ‘O’ : }Gán ‘\textbf{O}’ (Nước đi của Máy) vào vị trí mà SI đang trỏ tới trong bàn cờ.
+    \item \textbf{call DELAY :} Gọi hàm DELAY làm chậm chương trình. 
+    \item \textbf{jmp CONTINUE\_GAME\_VS\_COMPUTER :} Nhảy tới nhãn tiếp tục lượt chơi tiếp theo của chế độ Người chơi với Máy.
+    \item \textbf{RET :} Hàm trả về, kết thúc hàm \textbf{ENTER\_MOVE}
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+\newpage
+\textbf{\underline{CHANCE\_TO\_WIN}: }Thủ tục tìm nước đi để Máy dành chiến thắng.\\
+\includegraphics[width=\linewidth]{image4.png}
+\includegraphics[width=\linewidth]{image23.png}
+
+\begin{itemize}
+    \item \textbf{mov CX, 3 :} Khởi tạo biến lặp để duyệt 3 hàng ngang trong bàn cờ.
+    \item \textbf{lea SI, BOARD :} Nạp địa chỉ ô đầu tiên của bàn cờ vào \textbf{SI}.
+    \item \textbf{DUYET\_HANG\_WIN:} Duyệt từng hàng để tìm nước đi 
+    \item \textbf{mov DH, [SI] :} Lưu kí tự đầu tiên của hàng đang duyệt vào \textbf{DH}.
+    \item \textbf{mov DL, [SI + 1] :} Lưu kí tự thứ 2 của hàng đang duyệt vào \textbf{\textbf}.
+    \item \textbf{mov bl, [SI + 2] :} Lưu kí tự thứ 3 của hàng đang duyệt vào \textbf{BL}.
+    \item \textbf{cmp DH, ‘X’ / cmp DL, ‘X’ / cmp bl, ‘X’ :} So sánh 3 kí tự của hàng với kí tự ‘X’ (Người chơi) 
+    \item \textbf{je TIEP\_TUC\_DUYET\_HANG\_WIN :} Nếu trong hàng có kí tự ‘X’ tức là Máy không thể thắng thông qua hàng đó ( Bắt buộc có 3 ‘O’ ) thì nhảy tới nhãn \textbf{TIEP\_TUC\_DUYET\_HANG\_WIN} để tiếp tục duyệt hàng tiếp theo.
+    \item \textbf{cmp DH, ‘O’  và cmp DL, ‘O’ :} So sánh kí tự đầu với kí tự 2 của hàng với ‘O’
+    \item \textbf{jne skip1 :} Nếu 2 kí tự không phải là ‘O’ tức là chưa thắng hàng đó được thì chuyển tới so sánh kí tự thứ 2 với thứ 3 của hàng.
+    \item \textbf{add SI, 2  và  jmp ENTER\_MOVE :} Nếu 2 kí tự thứ 1 và 2 đều là ‘O’ thì tìm được nước đi để thắng ở ô thứ 3 của hàng (\textbf{add SI, 2}) và nhảy tới hàm \textbf{ENTER\_MOVE} để cập nhật nước đi trong bàn cờ.
+    \item[] Tương tự so sánh kí tự đầu với kí tự 2 bên trên (để kiểm tra nước đi ở ô còn lại):
+    \item \textbf{skip1 :} Kiểm tra kí tự thứ 2 với thứ 3 liệu có thể chọn nước đi ở ô đầu tiên để thắng?
+    \item \textbf{skip2 :} Kiểm tra kí tự thứ 1 với thứ 3 liệu có thể chọn nước đi ở ô thứ 2 để thắng?
+    \item \textbf{TIEP\_TUC\_DUYET\_HANG\_WIN :} Nhãn thủ tục để duyệt hàng tiếp theo
+    \item \textbf{add SI, 3 :} Trỏ tới ô đầu tiên của hàng tiếp theo.
+    \item \textbf{loop DUYET\_HANG\_WIN :} Tiếp tục lặp cho tới khi hết 3 hàng để  tìm nước đi có thể chiến thắng ở 1 trong 3 hàng \\
+    \includegraphics[width=\linewidth]{image44.png}
+    \includegraphics[width=\linewidth]{image60.png}
+    \item \textbf{DUYET\_COT\_WIN} ( Tương tự với \textbf{DUYET\_HANG\_WIN} )  : Duyệt lần lượt 3 cột của bàn cờ để tìm nước đi có thể chiến thắng.
+    \begin{itemize}
+        \item Mỗi lần duyệt 1 cột thì sẽ kiểm tra có tồn 2 kí tự đều là ‘O’ và kí tự còn lại khác với ‘X’ (Người chơi): 
+        \item Nếu có thì tìm được thì nhảy đến \textbf{ENTER\_MOVE} để cập nhật nước đi tại ô khác ‘O’ trong cột -> WIN
+        \item Nếu không thì chuyển tới kiểm tra Đường chéo chính và Đường chéo phụ.
+    \end{itemize}
+    \includegraphics[width=\linewidth]{image39.png}
+    \item Đoạn code trên có ý nghĩa : Kiểm tra liệu có thể tìm nước đi trong Đường chéo chính (DCC) để chiến thắng hay không ?
+    \item \textbf{mov DH, BOARD[0] :} Lưu kí tự đầu tiên của DCC vào DH.
+    \item \textbf{mov DL, BOARD[4] :} Lưu kí tự thứ 2 của DCC vào DL.
+    \item \textbf{mov bl, BOARD[8] :} Lưu kí tự thứ 3 của DCC vào BL.
+    \item \textbf{cmp DH, ‘X’ / cmp DL, ‘X’ / cmp bl, ‘X’ : } So sánh 3 kí tự của hàng với kí tự ‘X’ (Người chơi) .
+    \item \textbf{je TIEP\_TUC\_DCP\_WIN :} Nếu trong hàng có kí tự ‘X’ tức là Máy không thể thắng thông qua DCC thì nhảy tới nhãn TIEP\_TUC\_DCP\_WIN để tiếp tục duyệt Đường chéo phụ.
+    \item \textbf{Ngược lại : }Lần lượt kiểm tra có tồn tại kí tự đầu tiên cùng kí tự thứ 2 / kí tự thứ 2 cùng kí tự thứ 3 (skip5) / kí tự đầu tiên cùng kí tự thứ 3 (skip6) trong DCC đều là ‘O’ .
+    \item \textbf{jmp ENTER\_MOVE :} Nếu tìm thấy thì nhảy tới nhãn ENTER\_MOVE để cập nhật ô Máy có thể đi để chiến thắng : 
+    \begin{itemize}
+        \item \textbf{add SI, 8 :} Nước đi ở ô thứ 3 của DCC
+        \item \textbf{add SI, 0 :} Nước đi ở ô đầu tiên của DCC
+        \item \textbf{add SI, 4 :} Nước đi ở ô thứ 2 của DCC
+    \end{itemize}
+    \item \textbf{jne TIEP\_TUC\_DCP\_WIN :} Nếu không tìm được nước đi trong DCC sau khi duyệt 3 trường hợp thì chuyển sang Tìm nước đi ở Đường chéo phụ.
+    \includegraphics[width=0.9\linewidth]{image11.png}
+    \item \textbf{TIEP\_TUC\_DCP\_WIN : }Tương tự đoạn code bên trên, Nhãn này có ý nghĩa : Kiểm tra liệu có thể tìm nước đi trong Đường chéo phụ (DCP) để chiến thắng hay không ?
+    \item Nếu tìm được 2 kí tự bất kì trong DCP đều là ‘O’ (Máy) thì Máy cần đi ngay ở ô còn lại để chiến thắng : 
+    \begin{itemize}
+        \item \textbf{add SI, 6 : }Chọn nước đi ở ô thứ 3 của DCC.
+        \item \textbf{add SI, 2 : }Chọn nước đi ở ô đầu tiên của DCC.
+        \item \textbf{add SI, 4 : }Chọn nước đi ở ô thứ 2 của DCC.
+    \end{itemize}
+    \item \textbf{XONG\_8\_DUONG\_WIN :} Sau khi không tồn tại kí tự đầu tiên cùng kí tự thứ 2 / kí tự thứ 2 cùng kí tự thứ 3 (skip7) / kí tự đầu tiên cùng kí tự thứ 3 (skip8) trong DCP đều là ‘O’ thì tức là Máy KHÔNG THỂ CHIẾN THẮNG TRONG LƯỢT CHƠI NÀY sau khi xét 8 đường có thể chiến thắng được ( 3 Hàng, 3 Cột, 2 Đường chéo).
+    \item \textbf{RET :} Trả về, kết thúc hàm CHANCE\_TO\_WIN.
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+
+\textbf{\underline{CHANCE\_TO\_BLOCK}: }Thủ tục tìm nước đi để chặn Người chơi chiến thắng.\\
+\includegraphics[width=\linewidth]{image16.png}
+\includegraphics[width=\linewidth]{image20.png}
+
+\begin{itemize}
+    \item \textbf{mov CX, 3 :} Khởi tạo biến lặp để duyệt 3 hàng ngang trong bàn cờ.
+    \item \textbf{lea SI, BOARD : }Nạp địa chỉ ô đầu tiên của bàn cờ vào SI.
+    \item \textbf{DUYET\_HANG\_BLOCK:} Duyệt từng hàng để tìm nước đi. 
+    \item \textbf{mov DH, [SI] :} Lưu kí tự đầu tiên của hàng đang duyệt vào DH.
+    \item \textbf{mov DL, [SI + 1] :} Lưu kí tự thứ 2 của hàng đang duyệt vào DL.
+    \item \textbf{mov bl, [SI + 2] : }Lưu kí tự thứ 3 của hàng đang duyệt vào BL.
+    \item \textbf{cmp DH, ‘O’ / cmp DL, ‘O’ / cmp bl, ‘O’ :} So sánh 3 kí tự của hàng với kí tự ‘O’ (Máy) 
+    \item \textbf{je TIEP\_TUC\_DUYET\_HANG\_BLOCK :} Nếu trong hàng có kí tự ‘X’ tức là Người chơi không thể thắng thông qua hàng đó ( Bắt buộc có 3 ‘X’ ) thì nhảy tới nhãn TIEP\_TUC\_DUYET\_HANG\_BLOCK để tiếp tục duyệt hàng tiếp theo.
+    \item \textbf{cmp DH, ‘X’  và cmp DL, ‘X’ :} So sánh kí tự đầu với kí tự 2 của hàng với ‘X’.
+    \item \textbf{jne skip9 :} Nếu 2 kí tự không phải là ‘X’ tức là Người chơi chưa thắng hàng đó được (Không cần chặn hàng đó) thì chuyển tới so sánh kí tự thứ 2 với thứ 3 của hàng.
+    \item \textbf{add SI, 2  và  jmp ENTER\_MOVE : }Nếu 2 kí tự thứ 1 và 2 đều là ‘X’ thì tìm được nước đi để chặn Người chơi thắng ở ô thứ 3 của hàng (add SI, 2) và nhảy tới hàm ENTER\_MOVE để cập nhật nước đi trong bàn cờ.
+    \item Tương tự so sánh kí tự đầu với kí tự 2 bên trên (để kiểm tra nước đi ở ô còn lại):
+    \begin{itemize}
+        \item \textbf{skip1 :} Kiểm tra kí tự thứ 2 với thứ 3 liệu có thể chọn nước đi ở ô đầu tiên để chặn Người chơi thắng?
+        \item \textbf{skip2 :} Kiểm tra kí tự thứ 1 với thứ 3 liệu có thể chọn nước đi ở ô thứ 2 để chặn Người chơi thắng?
+    \end{itemize}
+    \item \textbf{TIEP\_TUC\_DUYET\_HANG\_BLOCK :} Nhãn thủ tục để duyệt hàng tiếp theo
+    \item \textbf{add SI, 3 :} Trỏ tới ô đầu tiên của hàng tiếp theo.
+    \item \textbf{loop DUYET\_HANG\_BLOCK :} Tiếp tục lặp cho tới khi hết 3 hàng để  tìm nước đi có thể chặn Người chơi chiến thắng ở 1 trong 3 hàng  \\
+    \includegraphics[width=\linewidth]{image3.png}
+    \includegraphics[width=\linewidth]{image13.png}
+    \item \textbf{DUYET\_COT\_BLOCK }( Tương tự với \textbf{DUYET\_HANG\_BLOCK} )  : Duyệt lần lượt 3 cột của bàn cờ để tìm nước đi có thể chặn Người chơi chiến thắng.
+    \item Mỗi lần duyệt 1 cột thì sẽ kiểm tra có tồn 2 kí tự đều là ‘X’ và kí tự còn lại khác với ‘O’ (Máy): 
+    \begin{itemize}
+        \item Nếu có thì tìm được thì nhảy đến \text{ENTER\_MOVE} để cập nhật nước đi tại ô khác ‘X’ trong cột -> Chặn người chơi chiến thắng thành công.
+        \item Nếu không thì chuyển tới kiểm tra Đường chéo chính và Đường chéo phụ.
+    \end{itemize}
+    \includegraphics[width=\linewidth]{image36.png}
+    \includegraphics[width=\linewidth]{image6.png}
+    \item Đoạn code trên có ý nghĩa : Kiểm tra liệu có thể tìm nước đi trong Đường chéo chính (DCC) để chặn Người chơi chiến thắng hay không ?
+    \item \textbf{mov DH, BOARD[0] : }Lưu kí tự đầu tiên của DCC vào DH.
+    \item \textbf{mov DL, BOARD[4] : }Lưu kí tự thứ 2 của DCC vào DL.
+    \item \textbf{mov bl, BOARD[8] :} Lưu kí tự thứ 3 của DCC vào BL.
+    \item \textbf{cmp DH, ‘O’ / cmp DL, ‘O’ / cmp bl, ‘O’ :}  So sánh 3 kí tự của hàng với kí tự ‘O’ (Máy) .
+    \item \textbf{je TIEP\_TUC\_DCP\_BLOCK :} Nếu trong hàng có kí tự ‘O’ tức là Người chơi không thể thắng thông qua DCC thì nhảy tới nhãn \textbf{TIEP\_TUC\_DCP\_BLOCK} để tiếp tục duyệt Đường chéo phụ.
+    \item Lần lượt kiểm tra có tồn tại kí tự đầu tiên cùng kí tự thứ 2 / kí tự thứ 2 cùng kí tự thứ 3 (\textbf{skip13}) / kí tự đầu tiên cùng kí tự thứ 3 (skip14) trong DCC đều là ‘X’ .
+    \item \textbf{jmp ENTER\_MOVE :} Nếu tìm thấy thì nhảy tới nhãn \textbf{ENTER\_MOVE} để cập nhật ô Máy có thể đi để chặn Người chơi chiến thắng : 
+    \begin{itemize}
+        \item \textbf{add SI, 8 :} Nước đi ở ô thứ 3 của DCC
+        \item \textbf{add SI, 0 : }Nước đi ở ô đầu tiên của DCC
+        \item \textbf{add SI, 4 :} Nước đi ở ô thứ 2 của DCC
+    \end{itemize}
+    \item \textbf{jne TIEP\_TUC\_DCP\_BLOCK :} Nếu không tìm được nước đi trong DCC sau khi duyệt 3 trường hợp thì chuyển sang Tìm nước đi ở Đường chéo phụ.
+    \includegraphics[width=\linewidth]{image34.png}
+    \includegraphics[width=\linewidth]{image64.png}
+    \item \textbf{TIEP\_TUC\_DCP\_BLOCK :} Tương tự đoạn code \textbf{TIEP\_TUC\_DCC\_BLOCK} bên trên, Nhãn này có ý nghĩa : Kiểm tra liệu có thể tìm nước đi trong Đường chéo phụ (DCP) để chặn Người chơi chiến thắng hay không ?
+    \item Nếu tìm được 2 kí tự bất kì trong DCP đều là ‘X’ (Người chơi) thì cần chặn ngay ở ô còn lại : 
+    \begin{itemize}
+        \item \textbf{add SI, 6 :} Chặn ở ô thứ 3 của DCP.
+        \item \textbf{add SI, 2 :} Chặn ơ ô đầu tiên của DCP.
+        \item \textbf{add SI, 4 :} Chặn ở ô thứ 2 của DCP.
+    \end{itemize}
+    \item \textbf{XONG\_8\_DUONG\_BLOCK :} Sau khi không tồn tại kí tự đầu tiên cùng kí tự thứ 2 / kí tự thứ 2 cùng kí tự thứ 3 (skip15) / kí tự đầu tiên cùng kí tự thứ 3 (skip16) trong DCP đều là ‘X’ thì tức là Máy KHÔNG THỂ CHẶN NGƯỜI CHƠI CHIẾN THẮNG TRONG LƯỢT CHƠI NÀY sau khi xét 8 đường có thể chặn ( 3 Hàng, 3 Cột, 2 Đường chéo).
+    \item \textbf{RET :} Trả về, kết thúc hàm \textbf{CHANCE\_TO\_BLOCK}.
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+
+\textbf{\underline{CHECK\_MIDDLE\_POS}: }Thủ tục kiểm tra Máy có thể chọn nước đi ở ô Chính giữa của bàn cờ không ?\\
+\includegraphics[width=\linewidth]{image45.png}
+
+\begin{itemize}
+    \item \textbf{lea SI, BOARD :} Nạp địa chỉ ô đầu tiên của bàn cờ (ô [0][0]) vào SI.
+    \item \textbf{cmp BOARD[4], ‘X’ :} So sánh kí tự ở chính giữa bàn cờ với ‘X’
+    \item \textbf{cmp BOARD[4], ‘O’ :} So sánh kí tự ở chính giữa bàn cờ với ‘O’
+    \item \textbf{je CANT\_INSERT\_MIDDLE :} Nhảy tới nhãn \textbf{CANT\_INSERT\_MIDDLE} nếu kí tự chính giữa là ‘X’ hoặc ‘O’ (Không thể chọn nước đi ở ô chính giữa).
+    \item Nếu chọn được nước đi chính giữa thì : 
+    \begin{itemize}
+        \item \textbf{add SI, 4 :} Trỏ SI tới ô chính giữa của bàn cờ
+        \item \textbf{jmp ENTER\_MOVE :} Nhảy tới hàm \textbf{ENTER\_MOVE} để cập nhật nước đi của Máy ở ô SI đang trỏ.
+    \end{itemize}
+    \item \textbf{RET:} Trả về, kết thúc hàm CHECK\_MIDDLE\_POS. 
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+
+\textbf{\underline{CHECK\_CORNER\_POS}: }Thủ tục kiểm tra Máy có thể tìm nước đi ở 1 trong 4 ô góc của bàn cờ không ?\\
+\includegraphics[width=\linewidth]{image12.png}
+
+\begin{itemize}
+    \item \textbf{lea SI, BOARD :} Nạp địa chỉ ô đầu tiên của bàn cờ vào SI.
+    \item \textbf{GOC0 :} Nhãn tìm kiếm nước đi ở ô [0][0] (Góc trên bên trái) 
+    \item \textbf{cmp BOARD[0], ‘X’ :} So sánh kí tự ở góc [0][0] với ‘X’.
+    \item \textbf{cmp BOARD[0], ‘O’ :} So sánh kí tự ở góc [0][0] với ‘O’.
+    \item \textbf{je GOC2 :} Nếu là ‘X’ hoặc ‘O’ thì không chọn nước đi góc [0][0] được -> nhảy tới GOC2 
+    \item Nếu tìm được thì chọn được nước đi ở ô SI đang trỏ (góc [0][0]).
+    \item Tương tự tìm nước đi ở ô [0][0] (GOC0) ta có : 
+    \begin{itemize}
+        \item \textbf{GOC2 :} Tìm ở ô [0][2] nếu tìm thấy thì \textbf{add SI, 2 :} Chọn ô [0][2]
+        \item \textbf{GOC6 :} Tìm ở ô [2][0] nếu tìm thấy thì \textbf{add SI, 6 :} Chọn ô [2][0]
+        \item \textbf{GOC8 : }Tìm ở ô [2][2] nếu tìm thấy thì \textbf{add SI, 8 :} Chọn ô [2][0]
+    \end{itemize}
+    \item \textbf{jmp ENTER\_MOVE :} Nếu tìm được nước đi ở 1 trong 4 ô góc thì nhảy tới ENTER\_MOVE để cập nhật nước đi của Máy.
+    \item \textbf{je NOT\_FOUND\_CORNER\_POS :} Không tìm được nước đi ở 4 ô góc thì nhảy tới NOT\_FOUND\_CORNER\_POS : Kết thúc tìm nước đi ở 4 ô góc.
+    \item \textbf{RET :} Trả về, kết thúc hàm \textbf{CHECK\_CORNER\_POS}
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+
+\textbf{\underline{CHECK\_RANDOM\_POS }: }Thủ tục tìm Máy nước đi ở 4 ô còn lại trong bàn cờ.\\
+\includegraphics[width=\linewidth]{image10.png}
+
+\begin{itemize}
+    \item \textbf{lea SI, BOARD :} Nạp địa chỉ ô đầu tiên của bàn cờ vào SI.
+    \item \textbf{O1 :} Nhãn tìm kiếm nước đi ở ô [0][1] 
+    \item \textbf{cmp BOARD[1], ‘X’ :} So sánh kí tự ở [0][1] với ‘X’.
+    \item \textbf{cmp BOARD[1], ‘O’ : }So sánh kí tự ở [0][1] với ‘O’.
+    \item \textbf{je O3 : }Nếu là ‘X’ hoặc ‘O’ thì không chọn nước đi ô [0][1] được -> nhảy tới O3 
+    \item \textbf{add SI, 1 :} Nếu tìm được thì chọn được nước đi ở ô [0][1].
+    \item Tương tự tìm nước đi ở ô [0][1] (O1) ta có : 
+    \item \textbf{O3 :} Tìm ở ô [1][0] nếu tìm thấy thì \textbf{add SI, 3} : Chọn ô [1][0]
+    \item \textbf{O5 :} Tìm ở ô [1][2] nếu tìm thấy thì \textbf{add SI, 5} : Chọn ô [1][2]
+    \item \textbf{O7 :} Tìm ở ô [2][1] nếu tìm thấy thì \textbf{add SI, 7} : Chọn ô [2][1]
+    \item \textbf{jmp ENTER\_MOVE :} Nếu tìm được nước đi ở 1 trong 4 ô góc thì nhảy tới ENTER\_MOVE để cập nhật nước đi của Máy.
+    \item Do chắc chắn tìm được nước đi cho máy ở 1 lượt chơi (Nếu chưa ai thắng / hòa) nên nếu xét hết 8 ô và cuối cùng chỉ còn O7 (ô [2][1]) thì ô [2][1] chính là nước đi mà máy chọn được ở lượt chơi này.
+    \item \textbf{RET :} Trả về, kết thúc hàm \textbf{CHECK\_RANDOM\_POS}
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+
+\textbf{\underline{Check\_WIN}: }Thủ tục check ai sẽ là người chiến thắng\\
+%\includegraphics[width=\linewidth]{image50.png}
+
+\begin{itemize}
+    \item \textbf{Mục Tiêu:} duyệt hàng, cột, 2 đường chéo nếu cả 3 trùng ký tự ‘X’ hoặc ‘O’ thì sẽ WIN
+    \item \textbf{Kiểm tra hàng và cột:} Xác định xem có hàng ngang hoặc cột  nào có 3 ô giống nhau không, tức là người chơi đã thắng theo hàng  hoặc cột.
+    \item \textbf{mov cx, 3:} Hàm gán giá trị cho thanh ghi cx là 3
+    \item \textbf{lea si,BOARD:} Nạp địa chỉ ô đầu tiên của bàn cờ vào si
+    \item \textbf{check\_row: }Vòng lặp kiểm tra mỗi hàng có ký tự giống nhau hay không
+    \begin{itemize}
+        \item \textbf{mov bl,[si]:} gán giá trị thanh gi bl bằng [si] địa chỉ đầu tiên của bàn cờ
+        \item \textbf{cmp bl, [si+1]:} so sánh ký tự ô [0][0] với ô [0][1]
+        \item \textbf{jne next\_row:} nếu không bằng nhảy đến nhãn next\_row
+        \item \textbf{cmp bl,[si+2]:} nếu không nhảy vào \textbf{next\_row} so sánh tiếp ô [0][0] với ô [0][2]
+        \item nếu bằng thì nhảy đến lệnh \textbf{jmp WIN}
+        \item \textbf{next\_row: }nếu ô [0][1] hoặc ô [0][2] không bằng ô đang xét thì 
+        \item \textbf{add si,3:} di chuyển đến hàng thứ 2
+        \item \textbf{loop check\_row:} giảm cx đi 1 nhảy đến \textbf{check\_row} check lại lặp lại tương tự  đến hết hàng thứ 3 nếu không nhảy vào \textbf{WIN}
+    \end{itemize}
+    \item \textbf{check\_column:} Tương tự như check row nhưng cần trỏ si đến vị trí kế tiếp của cột là 3 và 6 và vì kiểm tra cột nên vào lệnh next\_column chỉ cần trỏ si lên 1(đến cột kế tiếp)\\
+    \includegraphics[width=\linewidth]{image55.png}
+    \item Kiểm tra đường chéo phụ và đường chéo chính: Xác định xem có đường chéo nào có 3 ô giống nhau không, tức là người chơi đã thắng.
+    \item \textbf{lea si,BOARD:} Nạp địa chỉ ô đầu tiên của bàn cờ vào si
+    \item \textbf{check\_cheo1:} Vòng lặp kiểm tra đường chéo chính có cả 3 ký tự giống nhau hay không
+    \item \textbf{mov bl,[si]:} gán giá trị thanh gi bl bằng [si] địa chỉ đầu tiên của bàn cờ
+    \item \textbf{cmp bl, [si+4]:} so sánh ký tự ô [0][0] với ô [1][2] chéo phải xuống
+    \item \textbf{jne check\_cheo2:} nếu không bằng nhảy đến nhãn kiểm tra đường chéo phụ
+    \item \textbf{cmp bl,[si+8]:} nếu không nhảy vào \textbf{check\_cheo2} so sánh tiếp ô [0][0] với ô [2][2]
+    \item nếu không bằng nhảy đến nhãn \textbf{NO\_WIN}
+    \item nếu bằng thì nhảy đến nhãn \textbf{WIN}
+    \item \textbf{check\_cheo2:} Tương tự như check\_cheo1 nhưng cần trỏ si đến vị trí kế tiếp của ô là 4 và 6 và vì kiểm tra đường chéo phụ nên vị trí đầu tiên cần xét là 2
+    \item \textbf{CHECK\_WIN\_ENDP:} kết thúc hàm \textbf{CHECK\_WIN}
+\end{itemize}
+%=======================================================================
+%=======================================================================
+\textbf{\underline{X\_WIN}: }Thủ tục khi bên dấu  X thắng \\
+\includegraphics[width=\linewidth]{image48.png}
+\begin{itemize}
+    \item \textbf{call MSG\_FOR\_WINNER:} Gọi thủ tục MSG\_FOR\_WINNER
+    \item \textbf{mov AL, select\_mode:} Gán giá trị biến select\_mode cho AL
+    \item \textbf{cmp AL, 2:} So sánh giá trị AL với 2
+    \item \textbf{je msg\_for\_human:} Nhảy đến nhãn msg\_for\_human để in thông điệp khi chơi 
+\end{itemize}
+
+\textbf{Chế độ chơi 2 người:}
+\begin{itemize}
+    \item \textbf{mov DL, 5:} Đặt vị trí con trỏ lại về cột 5 
+    \item \textbf{mov DH, 31:} Đặt vị trí con trỏ lại về hàng 31
+    \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+    \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+    \item \textbf{lea DX, X\_WIN\_OUT:} Tải địa chỉ chuỗi vào DX
+    \item \textbf{mov AH, 9:} Lệnh in chuỗi
+    \item \textbf{int 21h: }Gọi ngắt in chuỗi
+    \item \textbf{jmp GAME\_END:} Nhảy đến nhãn GAME\_END
+\end{itemize}
+
+\textbf{Chế độ chơi với máy:}
+\begin{itemize}
+    \item \textbf{mov DL, 5:} Đặt vị trí con trỏ lại về cột 5 
+    \item \textbf{mov DH, 34:} Đặt vị trí con trỏ lại về hàng 34
+    \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+    \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+    \item \textbf{lea DX, HUMAN\_WIN: }Tải địa chỉ chuỗi vào DX
+    \item \textbf{mov AH, 9:} Lệnh in chuỗi
+    \item \textbf{int 21h: }Gọi ngắt in chuỗi
+    \item \textbf{jmp GAME\_END: }Nhảy đến nhãn GAME\_END
+\end{itemize}
+%=======================================================================
+%=======================================================================
+\textbf{\underline{O\_WIN}: }Thủ tục khi bên dấu O thắng\\
+\includegraphics[width=\linewidth]{image1.png}
+\begin{itemize}
+    \item \textbf{mov AL, select\_mode:} Gán giá trị biến select\_mode cho AL
+    \item \textbf{cmp AL, 2:} So sánh giá trị AL với 2
+    \item \textbf{je msg\_for\_computer:} Nhảy đến nhãn msg\_for\_computer để in thông điệp khi chơi với máy
+    \item \textbf{call MSG\_FOR\_WINNER:} Gọi thủ tục MSG\_FOR\_WINNER
+\end{itemize}
+
+\textbf{Chế độ chơi 2 người:}
+\begin{itemize}
+    \item \textbf{mov DL, 5:} Đặt vị trí con trỏ lại về cột 5 
+    \item \textbf{mov DH, 31:} Đặt vị trí con trỏ lại về hàng 31
+    \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+    \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+    \item \textbf{lea DX, O\_WIN\_OUT:} Tải địa chỉ chuỗi vào DX
+    \item \textbf{mov AH, 9:} Lệnh in chuỗi
+    \item \textbf{int 21h:} Gọi ngắt in chuỗi
+    \item \textbf{jmp GAME\_END:} Nhảy đến nhãn GAME\_END
+\end{itemize}
+
+\textbf{Chế độ chơi với máy:}
+
+\begin{itemize}
+    \item \textbf{mov DL, 5: }Đặt vị trí con trỏ lại về cột 5 
+    \item \textbf{mov DH, 34:} Đặt vị trí con trỏ lại về hàng 34
+    \item \textbf{mov AH, 2: }Hàm đặt vị trí con trỏ
+    \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+    \item \textbf{lea DX, COMPUTER\_WIN:} Tải địa chỉ chuỗi vào DX
+    \item \textbf{mov AH, 9:} Lệnh in chuỗi
+    \item \textbf{int 21h:} Gọi ngắt in chuỗi
+    \item \textbf{jmp GAME\_END:} Nhảy đến nhãn GAME\_END
+\end{itemize}
+%=======================================================================
+%=======================================================================
+\newpage
+\textbf{\underline{CHECK\_DRAW}: }Thủ tục check 2 người chơi hòa nhau \\
+
+\begin{itemize}
+    \item \textbf{AL $=$ 1} nếu là hòa
+    \item \textbf{AL $=$ 0} nếu không phải hòa (tức là còn ô trống để chơi tiếp).\\
+    \includegraphics[width=\linewidth]{image41.png}
+    \item \textbf{mov cx,9:} CX được gán giá trị 9, đại diện cho 9 ô trên bàn cờ.
+    \item \textbf{lea si, BOARD:} Trỏ SI tới vị trí đầu tiên của BOARD
+    \item \textbf{check\_draw\_loop:} Vòng lặp kiểm tra từng ô
+    \item \textbf{mov bl,[si]:} Lấy giá trị tại vị trí SI và đưa vào BL
+    \item \textbf{cmp bl,'X' :} So sánh kí tự đang được trỏ với ‘X’
+    \item \textbf{je  continue\_check\_draw\_loop :} Nếu ô đó chứa ký tự 'X', thì chuyển đến nhãn \textbf{continue\_check\_draw\_loop} để tiếp tục vòng lặp.
+    \item \textbf{cmp bl,'O' : }So sánh kí tự đang được trỏ với ‘O’
+    \item \textbf{je  continue\_check\_draw\_loop :} Nếu ô đó chứa ký tự 'O', cũng tiếp tục vòng lặp.
+    \item \textbf{jmp IS\_NOT\_DRAW: }Nếu ô đó không phải 'X' hoặc 'O', tức là ô trống, thì không phải hòa, nhảy đến nhãn \textbf{IS\_NOT\_DRAW}.
+    \item \textbf{continue\_check\_draw\_loop:} Tiếp tục vòng lặp:
+    \item \textbf{inc si:} Tăng SI để kiểm tra ô tiếp theo.
+    \item \textbf{loop check\_draw\_loop: }loop sẽ giảm CX đi 1 và nếu CX chưa bằng 0 thì quay lại nhãn \textbf{check\_draw\_loop}.
+    \item \textbf{jmp IS\_DRAW:} Nếu đã kiểm tra hết 9 ô mà không phát hiện ô trống nào thì là hòa, nhảy đến \textbf{IS\_DRAW}.
+    \item \textbf{Các nhãn kết thúc:}
+    \item \textbf{IS\_NOT\_DRAW:} Trò chơi chưa hòa (còn ô trống), trả về \textbf{AL $=$ 0.}
+    \item \textbf{mov al,0 }
+    \item \textbf{RET}
+    \item \textbf{IS\_DRAW:} Trò chơi hòa (tất cả ô đều đã được đánh), trả về \textbf{AL $=$ 1.}
+    \item \textbf{mov al,1}
+    \item \textbf{RET}
+    \item \textbf{CHECK\_DRAW ENDP:} Kết thúc thủ tục \textbf{CHECK\_DRAW}.   
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+\textbf{\underline{GAME\_DRAW}: }Thủ tục khi game hòa\\
+\includegraphics[width=\linewidth]{image57.png}
+
+\begin{itemize}
+    \item \textbf{mov DL, 5: }Đặt vị trí con trỏ lại về cột 5 
+    \item \textbf{mov DH, 36:} Đặt vị trí con trỏ lại về hàng 36
+    \item \textbf{mov AH, 2: }Hàm đặt vị trí con trỏ
+    \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+    \item \textbf{lea DX, DRAW\_OUT:} Tải địa chỉ chuỗi vào DX
+    \item \textbf{mov AH, 9:}Lệnh in chuỗi
+    \item \textbf{int 21h:} Gọi ngắt in chuỗi
+    \item \textbf{jmp GAME\_END:} Nhảy đến nhãn GAME\_END
+\end{itemize}
+%=======================================================================
+%=======================================================================
+\textbf{\underline{MSG\_FOR\_WINNER}: }Thủ tục in lời chúc mừng chiến thắng\\
+\includegraphics[width=\linewidth]{image21.png}
+\begin{itemize}
+    \item \textbf{mov CX, 15:} Gán độ dài chuỗi để thực hiện loop
+    \item \textbf{xor SI, SI:} Reset con trỏ về đầu chuỗi
+    \item \textbf{mov BH, 0: }Điều khiển con trỏ tại trang đang hiển thị 
+    \item \textbf{mov DH, 3: }Đặt vị trí con trỏ lại về hàng 3
+    \item \textbf{mov DL, 31:} Đặt vị trí con trỏ lại về cột 31
+    \item \textbf{mov AH, 2: }Hàm đặt vị trí con trỏ
+    \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+\end{itemize}
+
+\textbf{Nhãn print\_congratulation:}
+
+\begin{itemize}
+    \item \textbf{push CX:} Đẩy giá trị CX vào stack
+    \item \textbf{mov AH, 9:} Hàm in ký tự có màu
+    \item \textbf{mov CX, 1:} In một lần 
+    \item \textbf{mov BH, 0:} Điều khiển con trỏ tại trang đang hiển thị 
+    \item \textbf{mov BL, COLOR[SI]:} Gán mã màu theo thứ tự trong chuỗi COLOR vào BL  thông qua SI
+    \item \textbf{mov AL, msg\_winner[SI]:} Gán ký trong chuỗi msg\_winner vào AL thông qua SI
+    \item \textbf{int 10h:} Gọi ngắt để in ký tự màu
+    \item \textbf{inc SI: }Tăng con trỏ
+    \item \textbf{inc DL: }Tăng vị trí cột con trỏ 
+    \item \textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+    \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+    \item \textbf{pop CX: }Lấy giá trị ở đầu stack gán vào CX để thực hiện loop 
+    \item \textbf{loop print\_congratulation:} Nhảy đến nhãn print\_congratulation khi CX khác 0 
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+\textbf{\underline{MSG\_FOR\_LOSER}: }Thủ tục in khi người chơi thua máy\\
+\includegraphics[width=\linewidth]{image2.png}
+\begin{itemize}
+    \item \textbf{mov CX, 20:} Gán độ dài chuỗi để thực hiện loop
+    \item \textbf{xor SI, SI:} Reset con trỏ về đầu chuỗi
+    \item \textbf{mov BH, 0: }Điều khiển con trỏ tại trang đang hiển thị 
+    \item \textbf{mov DH, 3: }Đặt vị trí con trỏ lại về hàng 3
+    \item \textbf{mov DL, 28:} Đặt vị trí con trỏ lại về cột 28
+    \item \textbf{mov AH, 2: }Hàm đặt vị trí con trỏ
+    \item \textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+\end{itemize}
+
+\textbf{Nhãn print\_lose:}
+
+\begin{itemize}
+    \item\textbf{push CX:} Đẩy giá trị CX vào stack
+    \item\textbf{mov AH, 9:} Hàm in ký tự có màu
+    \item\textbf{mov CX, 1:} In một lần 
+    \item\textbf{mov BH, 0:} Điều khiển con trỏ tại trang đang hiển thị 
+    \item\textbf{mov AL, msg\_lose[SI]:} Gán ký trong chuỗi msg\_lose vào AL thông qua SI
+    \item\textbf{mov BL, 12:} Gán mã màu đỏ vào BL
+    \item\textbf{int 10h:} Gọi ngắt để in ký tự màu
+    \item\textbf{inc SI: }Tăng con trỏ
+    \item\textbf{inc DL: }Tăng vị trí cột con trỏ 
+    \item\textbf{mov AH, 2:} Hàm đặt vị trí con trỏ
+    \item\textbf{int 10h:} Gọi ngắt để đặt lại con trỏ
+    \item\textbf{pop CX: }Lấy giá trị ở đầu stack gán vào CX để thực hiện loop 
+    \item\textbf{loop print\_lose:} Nhảy đến nhãn print\_lose khi CX khác 0 
+\end{itemize}
+
+%=======================================================================
+%=======================================================================
+\textbf{\underline{CLEAR\_SCREEN}: }Thủ tục xóa màn hình\\
+\includegraphics[width=\linewidth]{image40.png}
+
+\begin{itemize}
+    \item \textbf{mov AX, 3:} Hàm xóa màn hình
+    \item \textbf{int 10h: }Gọi ngắt xóa màn hình 
+\end{itemize}
+%=======================================================================
+%=======================================================================
+\textbf{\underline{DELAY}: }Thủ tục delay màn hình hiển thị\\
+\includegraphics[width=\linewidth]{image19.png}
+
+\begin{itemize}
+    \item \textbf{mov CX,0123H:} Gán giá trị cho CX để thực hiện vòng lặp
+    \item \textbf{Nhãn delay\_screen:}
+    \begin{itemize}
+        \item \textbf{nop: }Không làm gì cả nhưng vẫn tốn thời gian CPU.
+        \item \textbf{loop delay\_screen:} Nhảy đến nhãn delay\_screen khi CX khác 0 
+    \end{itemize}
+\end{itemize}
+%======================================================================================================================================
+
+\subsection*{\textbf{\large GIAO DIỆN CHƯƠNG TRÌNH}}
+\addcontentsline{toc}{subsection}{GIAO DIỆN CHƯƠNG TRÌNH}
+\begin{itemize}
+    \item Bắt đầu chương trình là lời giới thiệu đến game Tic Tac Toe của nhóm 22.\\
+    \includegraphics[width=\linewidth]{image70.png}
+    \item Tiếp theo màn hình hiện lên tên và mã SInh viên của 4 thành viên đã làm game, và dòng cuối yêu cầu người dùng nhập một phím bất kì để bắt đầu trò chơi.\\
+    \includegraphics[width=\linewidth]{image27.png}
+    \item Màn hình hiện lên 2 lựa chọn chế độ chơi là chơi với người (\textbf{1 - HUMAN}) hoặc chơi với máy (\textbf{2 - COMPUTER}), người chơi nhập câu trả lời ở dòng “\textbf{Press your answer}”.\\
+    \includegraphics[width=\linewidth]{image65.png}
+    \item \textbf{Chế độ chơi với người (1 - HUMAN) :}
+    \begin{itemize}
+        \item Màn hình hiện lên bảng 3x3 và được đánh số từ 1 đến 9.\\
+        \includegraphics[width=\linewidth]{image8.png}
+        \item Người chơi với dấu \text{‘X’} sẽ đi trước, sau khi người chơi \text{‘X’} chọn ô thì dấu \text{‘X’} hiện trên bảng sẽ có màu hồng.\\
+        \includegraphics[width=\linewidth]{image22.png}
+        \item Người chơi với dấu \text{‘O’} sẽ đi sau, sau khi người chơi \text{‘O’} chọn ô thì dấu \text{‘O’} hiện trên bảng sẽ có màu xanh.\\
+        \includegraphics[width=\linewidth]{image5.png}
+        \item Nếu người chơi chọn một ô đã được chọn thì sẽ bị hệ thống cho là nước đi lỗi và  màn hình sẽ hiện lên dòng chữ “Invalid move! Try again” người chơi sẽ phải chọn lại nước đi khác.\\
+        \includegraphics[width=\linewidth]{image59.png}
+        \item Khi 1 người chơi chiến thắng thì màn hình sẽ hiện lên “CONGRATULATION” và “Player X/O wins”.\\
+        \includegraphics[width=\linewidth]{image66.png}
+        \item Còn nếu hòa thì màn hình sẽ hiện lên “ Draw”.\\
+        \includegraphics[width=\linewidth]{image26.png}
+    \end{itemize}
+    \item \textbf{Chế độ chơi với máy (2 - COMPUTER) :}
+    \begin{itemize}
+        \item Sau khi chọn chế độ chơi với máy, màn hình sẽ hiện lên 2 lựa chọn cho người chơi (1 - YOU) hay máy (2 - COMPUTER) sẽ là người đi trước, người chơi nhập câu trả lời ở dòng “Enter your choice”.
+        \begin{itemize}
+            \item Nếu chọn 1 - YOU thì người chơi sẽ đi trước với dấu \text{‘X’}
+            \item Nếu chọn 2 - COMPUTER thì máy sẽ đi trước với dấu \text{‘O’}\\
+        \end{itemize}
+        \includegraphics[width=\linewidth]{image9.png}
+        \item Khi đến lượt người chơi thì màn hình sẽ hiện lên “Player turn, Enter poSItion (1-9 )” để người chơi chọn ô đánh dấu \text{‘X’}.\\
+        \includegraphics[width=\linewidth]{image30.png}
+        \item Nếu người chơi chọn ô đã được chọn thì sẽ tính là nước đi lỗi và màn hình sẽ hiện lên thông báo như chế độ chơi 2 người.\\
+        \includegraphics[width=\linewidth]{image59.png}
+        \item Khi đến lượt máy thì màn hình sẽ hiện lên màn hình đợi để máy tính toán nước đi.\\
+        \includegraphics[width=\linewidth]{image32.png}
+        \item Nếu máy thắng thì thông báo “TRY BETTER NEXT TIME” và “COMPUTER WIN” sẽ hiện lên.\\
+        \includegraphics[width=\linewidth]{image61.png}
+        \item Nếu người chơi thắng thì thông báo “CONGRATULATION” và “HUMAN WIN” sẽ hiện lên.\\
+        \includegraphics[width=\linewidth]{image47.png}
+        \item Còn hòa thì thông báo sẽ hiện lên như chế độ chơi 2 người.\\
+        \includegraphics[width=\linewidth]{image26.png}
+    \end{itemize}
+\end{itemize}
+
+

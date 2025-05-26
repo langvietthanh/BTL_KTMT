@@ -1,0 +1,44 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath}
+\usepackage{tcolorbox}
+\usepackage[top=3 cm, bottom=3.0cm, left=3.5cm, right=2cm]{geometry}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{tocloft}
+\usepackage{subcaption}
+\usepackage{fancybox}
+\usepackage{enumitem}
+
+\begin{document}
+
+    \input{trangbia.tex}
+
+    \tableofcontents
+
+    \section*{\LARGE PHẦN 1: BÀI TẬP CÁ NHÂN}
+    \addcontentsline{toc}{section}{PHẦN 1: BÀI TẬP CÁ NHÂN}
+
+    \input{section1.tex}
+    \input{section2.tex}
+
+    \section*{\LARGE PHẦN 2: BÀI TẬP NHÓM}
+    \addcontentsline{toc}{section}{PHẦN 2: BÀI TẬP NHÓM}
+
+    \input{phần nhóm.tex}
+
+    \section*{\LARGE MÃ NGUỒN}
+    \addcontentsline{toc}{section}{MÃ NGUỒN}
+    \href{https://github.com/langvietthanh/BTL_KTMT.git}{SOURCE CODE LATEX}
+    
+    \vfill 
+
+    \begin{center}
+    \textbf{\LARGE END}
+    \end{center}
+\end{document}

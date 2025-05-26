@@ -1,0 +1,337 @@
+\subsection*{\textbf{\Large BÀI 2: }}
+\addcontentsline{toc}{subsection}{BÀI 2}
+
+\subsubsection*{1. Khảo sát cấu hình của máy và hệ thống bộ nhớ của máy đang sử dụng (Bộ nhớ trong: ROM, RAM, Cache System, Bộ nhớ ngoài: ổ đĩa
+cứng, CD, Thiết bị vào ra.)}
+\addcontentsline{toc}{subsubsection}{Khảo sát cấu hình và hệ thống bộ nhớ của máy}
+
+
+\textbf{Bộ vi xử lí (CPU)}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\linewidth]{cau hinh may.png}
+    \caption{CPU}
+    \label{fig:cau_hinh_may}
+\end{figure}
+
+\begin{itemize}
+    \item CPU: Intel Core i7-1165G7
+    \item Thế hệ: 11th Gen Tiger Lake-U
+    \item Socket: 1449 FCBGA
+    \item Công nghệ sản xuất: 10nm
+    \item Số nhân / Số luồng: 4 Cores / 8 Threads
+    \item Xung nhịp cơ bản: 2.80 GHz
+    \item Xung nhịp thực tế: 2494.15 MHz (2.49 GHz tại thời điểm khảo sát)  
+\end{itemize}
+%============================================================================
+\textbf{Bộ nhớ đệm (Cache)}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\linewidth]{cache.png}
+    \caption{Cache}
+    \label{fig:cache}
+\end{figure}
+
+\begin{itemize}
+    \item L1: 4 x 48 KB (Data) + 4 x 32 KB (Instruction)
+    \item L2: 4 x 1.25 MB
+    \item L3: 12 MB
+\end{itemize}
+%============================================================================
+\textbf{Bộ nhớ trong (RAM)}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[h]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{memory.png}
+        \caption{Memory}
+        \label{fig:computer_memory}
+    \end{subfigure}
+    \begin{subfigure}[h]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{spd.png}
+        \caption{SPD}
+        \label{fig:computer_spd}
+    \end{subfigure}
+    \caption{Cấu hình bộ nhớ trong (RAM)}
+    \label{fig:memory}
+\end{figure}
+
+\begin{itemize}
+    \item Dung lượng tổng: 16 GB DDR4
+    \item Tốc độ DRAM: 1597.1 MHz (tức là ~3200 MHz thực tế do DDR: Double Data Rate)
+    \item Hãng sản xuất: Ramaxel Technology
+    \item Cấu hình: 2 kênh (Dual Channel - 2x 64-bit)
+    \item Thông số Timing:
+        \begin{itemize}
+        \item CAS Latency (CL): 22
+        \item RAS to CAS Delay (tRCD): 22
+        \item RAS Precharge (tRP): 22
+        \item Cycle Time (tRAS): 52
+        \end{itemize}
+\end{itemize}
+%============================================================================
+\textbf{Bộ nhớ ngoài (ROM)}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{task_manager.png}
+    \caption{ROM}   
+    \label{fig:computer_rom}
+\end{figure}
+
+\begin{itemize}
+    \item Ổ cứng chính: SSD NVMe
+    \item Model: SK Hynix HFS512GEJ4X112N
+    \item Dung lượng: 512 GB (hiển thị 477 GB khả dụng)
+    \item Tốc độ phản hồi trung bình: 1.6 ms
+    \item Giao tiếp: NVMe (rất nhanh so với SATA SSD)
+\end{itemize}
+
+%============================================================================
+
+\textbf{Thiết bị vào/ra}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{divice io.png}
+    \caption{Divice I/O}
+    \label{fig:computer_divice}
+\end{figure}
+
+%============================================================================
+
+\subsubsection*{2. Dùng công cụ Debug khảo sát nội dung các thanh ghi IP, DS, ES, SS, CS, BP, SP}
+\addcontentsline{toc}{subsubsection}{Dùng công cụ Debug khảo sát nội dung các thanh ghi}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Screenshot 2025-05-26 132203.png}
+    \caption{Bắt đầu chương trình}
+    \label{fig:bat_dau_chuong_trinh}
+    \vspace{0.6cm}
+    
+
+    \includegraphics[width=\linewidth]{Screenshot 2025-05-26 132828.png}
+    \caption{Kết thúc chương trình}
+    \label{fig:ket_thuc_chuong_trinh}
+    \vspace{0.6cm}
+%======================================================
+
+    \begin{subfigure}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width = 1.1\linewidth]{Screenshot 2025-05-26 132441.png}
+        \caption{Trước hàm 'Nhap\_so'}
+        \label{fig:truoc_nhap_so}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width = 1.1\linewidth]{Screenshot 2025-05-26 132658.png}
+        \caption{Sau hàm 'Nhap\_so'}\label{fig:sau_nhap_so}
+    \end{subfigure}
+    \caption{Trạng thái của hàm 'Nhap\_so'}
+    \label{fig:ham_nhap_so}
+    \vspace{0.6cm}
+
+\end{figure}
+
+%====================================================
+
+\begin{figure}[H]
+    \begin{subfigure}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width =1.1 \linewidth]{Screenshot 2025-05-26 132658.png}
+        \caption{Trước hàm 'endl'}\label{fig:truoc_endl}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width = 1.1\linewidth]{Screenshot 2025-05-26 132716.png}
+        \caption{Sau hàm 'Nhap\_so'}\label{fig:sau_endl}
+    \end{subfigure}
+    \caption{Trạng thái của hàm 'endl'}
+    \label{fig:ham_endl}
+
+    \vspace{0.6cm}
+    
+    \centering
+    \begin{subfigure}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width = 1.1\linewidth]{Screenshot 2025-05-26 132741.png}
+        \caption{Trước hàm 'Dec\_to\_Bin'}\label{fig:truoc_dec_to_bin}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width =1.1 \linewidth]{Screenshot 2025-05-26 132810.png}
+        \caption{Sau hàm 'Dec\_to\_Bin'}\label{fig:sau_dec_to_bin}
+    \end{subfigure}
+    \caption{Trạng thái của hàm 'Dec\_to\_Bin'}
+    \label{fig:ham_dec_to_bin}
+
+
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \caption{Giá trị các thanh ghi tại từng bước khảo sát}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        Bước & CS & IP & SS & SP & BP & DS & ES \\ \hline
+        Bắt đầu chương trình & 0723 & 0000 & 0710 & 0100 & 0000 & 0700 & 0700 \\ \hline
+        Trước hàm Nhap\_so & 0723 & \texttt{000C} & 0710 & 0100 & 0000 & 0720 & 0700 \\ \hline
+        Sau hàm Nhap\_so & 0723 & \texttt{000F} & 0710 & 0100 & 0000 & 0720 & 0700 \\ \hline
+        Trước hàm endl & 0723 & \texttt{000F} & 0710 & 0100 & 0000 & 0720 & 0700 \\ \hline
+        Sau hàm endl & 0723 & 0012 & 0710 & 0100 & 0000 & 0720 & 0700 \\ \hline
+        Trước hàm Dec\_to\_Bin & 0723 & \texttt{001B} & 0710 & 0100 & 0000 & 0720 & 0700 \\ \hline
+        Sau hàm Dec\_to\_Bin & 0723 & \texttt{001E} & 0710 & 0100 & 0000 & 0720 & 0700 \\ \hline
+        Kết thúc chương trình & \texttt{F400} & 0204 & 0710 & \texttt{00FA} & 0000 & 0720 & 0700 \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsubsection*{3. Giải thích nội dung các thanh ghi, trên cơ sở đó giải thích cơ chế quản lý bộ nhớ của hệ thống trong trường hợp cụ thể này}
+\addcontentsline{toc}{subsubsection}{Giải thích nội dung các thanh ghi}
+\textbf{\underline{Giải thích nội dung các thanh ghi}}
+\begin{itemize}
+    \item Thanh ghi phân đoạn - Quản lý vùng bộ nhớ
+    \begin{itemize}
+        \item CS (Code Segment): Trỏ đến vùng chứa mã lệnh chương trình (vùng .code).
+        \item DS (Data Segment): Trỏ đến vùng chứa dữ liệu, như biến, chuỗi (vùng .data).
+        \item SS (Stack Segment): Trỏ đến vùng stack, nơi lưu tạm thời dữ liệu khi push, pop.
+        \item ES (Extra Segment): Vùng dữ liệu bổ sung, dùng khi làm việc với chuỗi.
+    \end{itemize}
+    \item Thanh ghi con trỏ – Quản lý vị trí trong segment
+    \begin{itemize}
+        \item IP (Instruction Pointer): Trỏ tới lệnh sẽ được thực thi tiếp theo. Tự động tăng sau mỗi lệnh.
+        \item SP (Stack Pointer): Chỉ đến đỉnh stack hiện tại (offset) tính từ SS). Dùng trong push, pop.
+        \item BP (Base Pointer): Dùng để truy cập dữ liệu trong stack, thường khi truyền tham số cho thủ tục.
+    \end{itemize}
+\end{itemize}
+
+\textbf{\underline{Giải thích cơ chế bộ nhớ}}
+
+\begin{itemize}
+    
+    \item Tổng quan về mô hình bộ nhớ (.model small):
+    \begin{itemize}
+        \item .model small: code và dữ liệu nằm trong cùng một segment (phân đoạn), không vượt quá 64KB.
+        \item Các phân đoạn chính: 
+        \begin{itemize}
+            \item Code segment (CS): Chứa mã chương trình (main, Nhap\_so, Dec\_to\_Bin, endl)
+            \item Data segment (DS): Chứa dữ liệu (x, y, tb1, tb2, crlf)
+            \item Stack segment (SS): Chứa ngăn xếp (lưu tạm ax, địa chỉ trả về,...)
+            \item Extra Segment	(ES): Thường dùng để hỗ trợ thao tác chuỗi/dữ liệu mở rộng
+        \end{itemize}
+    \end{itemize}
+%================================================================
+    \item CS (Code Segment) và IP (Instruction Pointer): 
+    \begin{itemize}
+        \item CS:IP kết hợp để xác định địa chỉ thực của lệnh đang được thực thi
+        \item Khi chương trình bắt đầu: 
+        \begin{itemize}
+            \item CS trỏ đến đoạn mã lệnh (do hệ điều hành MS-DOS nạp).
+            \item IP chứa offset đến lệnh hiện tại.
+        \end{itemize}
+        \item Mỗi khi CPU thực hiện xong một lệnh, nó cập nhật IP để trỏ đến lệnh tiếp theo
+        \item Với những lệnh thông thường như MOV, ADD, SUB,... thì IP sẽ trỏ đến những câu lệnh một cách tuần tự từ trên xuống
+        \item Với những lệnh như JMP, CALL, RET thì chương trình không còn chạy tuần tự, mà sẽ nhảy đến nơi khác theo chỉ định.
+        \begin{itemize}
+            \item Lệnh JMP: Sau khi thực hiện 'JMP lap1' thì IP lại trỏ đến lệnh sau label (nhãn) lap1 là lệnh MOV AH,1
+            \begin{figure}[H]
+                \begin{subfigure}[b]{0.4\linewidth}
+                    \centering
+                    \includegraphics[width = \linewidth]{IP khi den lenh JMP.png}
+                    \caption{IP khi đến lệnh JMP}
+                \end{subfigure}
+                \hfill
+                \begin{subfigure}[b]{0.4\linewidth}
+                    \centering
+                    \includegraphics[width = \linewidth]{IP sau thuc hien JMP.png}
+                    \caption{IP sau thực hiện lệnh JMP}
+                \end{subfigure}
+                \caption{Lệnh JMP}
+            \end{figure}
+            \item Lệnh CALL và RET: Khi IP chạy đến lệnh 'CALL Nhap\_so' thì CPU sẽ đẩy địa chỉ của lệnh sau 'CALL Nhap\_so' là 'CALL endl' vào Stack và sau khi kết thúc lệnh RET của 'Nhap\_so' thì địa chỉ của lệnh 'CALL endl' được lấy ra và IP trỏ tới để chương trình tiếp tục chạy
+            \begin{figure}[H]
+                \begin{subfigure}[b]{0.4\linewidth}
+                    \centering
+                    \includegraphics[width = \linewidth]{dia chi cua ham endl duoc day vao stack.png}
+                    \caption{IP nhảy vào Nhap\_so}
+                \end{subfigure}
+                \hfill
+                \begin{subfigure}[b]{0.4\linewidth}
+                    \centering
+                    \includegraphics[width = \linewidth]{dia chi cua ham endl sau ham Nhap_so.png}
+                    \caption{IP sau khi kết thúc Nhap\_so}
+                \end{subfigure}
+                \caption{Lệnh CALL và RET}
+            \end{figure}
+            
+        \end{itemize}
+    \end{itemize}
+
+%==================================================================
+    \item DS (Data Segment): 
+    \begin{itemize}
+        \item Dùng để truy xuất biến trong (.data) như: x, y, tb1, tb2, crlf.
+        \item Được khởi tạo tại dòng:
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.5\linewidth]{khởi tạo ds.png}
+            \caption{Khởi tạo DS}
+        \end{figure}
+
+        $\rightarrow$ @data trả về địa chỉ segment chứa dữ liệu thông qua thanh ghi AX trunng gian đưa vào thanh ghi DS.
+
+            $\Rightarrow$ Quản lí các biến x , y, tb1, tb2, crlf.
+    \end{itemize}
+
+%==================================================================
+    \item SS (Stack Segment) và SP (Stack Pointer):
+    \begin{itemize}
+        \item SS và SP dùng để truy xuất ngăn xếp.
+        \item Stack được khai báo qua 9 (.stack 100h ) $\rightarrow$ cấp 256 byte cho stack.
+        \item Hệ thống sẽ tự động khởi tạo SS và SP khi chương trình bắt đầu.
+        \begin{itemize}
+            \item SS trỏ vào segment stack.
+            \item SP thường khởi tạo ở đỉnh stack (offset 0100h).
+            \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.8\textwidth]{dia chi khoi tao stack.png}
+            \caption{Địa chỉ SS và SP khi chương trình chạy}
+        \end{figure}
+        \end{itemize}
+        \item Ví dụ khi hàm chạy đến hàm 'Nhap\_so'
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.8\linewidth]{stack truoc khi vao ham Nhap_so.png}
+            \caption{Stack trước hàm Nhap\_so}
+        \end{figure}
+        \item Địa chỉ 0710:00FE có giá trị là 0202h
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.8\linewidth]{dia chi cua ham endl duoc day vao stack.png}
+            \caption{Stack trong hàm Nhap\_so}
+        \end{figure}
+        \item Địa chỉ 0710:00FE đã thay đổi giá trị thành 000F $\Rightarrow$ CPU đẩy địa chỉ của lệnh kế tiếp (call endl)  vào Stack sau khi thực hiện hàm 'Nhap\_so'.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.8\linewidth]{dia chi cua ham endl sau ham Nhap_so.png}
+            \caption{Stack sau hàm Nhap\_so}
+        \end{figure}
+        \item Sau hàm Nhap\_so thì giá trị 000F của 0710:00FE được pop ra khỏi stack và CS:IP = 0723:0022 $\Rightarrow$ IP trỏ tới địa chỉ lệnh 'call endl' 
+    \end{itemize}
+
+\item BP (Base Pointer):
+\begin{itemize}
+    \item BP thường dùng trong thao tác với stack (ví dụ như khi xử lý tham số trong thủ tục).
+    \item Tuy nhiên không được sử dụng trong bài 'Chuyển số thập phân thành nhị phân', nên không ảnh hưởng đến quản lý bộ nhớ trong trường hợp này.
+\end{itemize}
+
+%==============================================
+\item  ES (Extra Segment):
+\begin{itemize}
+    \item ES là thanh ghi segment bổ sung, thường dùng để thao tác với các chuỗi hoặc vùng nhớ đặc biệt.
+    \item Trong chương trình này không sử dụng ES, nên không có quản lý bộ nhớ liên quan đến nó.
+\end{itemize}
+
+\end{itemize}
